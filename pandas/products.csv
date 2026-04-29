@@ -1,0 +1,6 @@
+,Product,Price,Units_Sold,Category
+0,Laptop,80000.0,60,Electronics
+1,Phone,12000.0,60,
+2,Tablet,,44,Electronics
+3,Camera,8000.0,65,Electronics
+4,Headphones,1500.0,119,Accessories
