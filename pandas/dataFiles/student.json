@@ -1,0 +1,37 @@
+[
+  {
+    "id":1,
+    "name":"Alice",
+    "age":23,
+    "grade":"A",
+    "city":"Kathmandu"
+  },
+  {
+    "id":2,
+    "name":"Bob",
+    "age":35,
+    "grade":"B",
+    "city":"Pokhara"
+  },
+  {
+    "id":3,
+    "name":"Charlie",
+    "age":29,
+    "grade":"A",
+    "city":"Lalitput"
+  },
+  {
+    "id":4,
+    "name":"Diana",
+    "age":31,
+    "grade":"C",
+    "city":"Bhaktapur"
+  },
+  {
+    "id":5,
+    "name":"Eva",
+    "age":27,
+    "grade":"B",
+    "city":"Kathmandu"
+  }
+]
