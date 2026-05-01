@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "name": "Alice Johnson",
+        "age": 20,
+        "grade": "A",
+        "major": "Computer Science"
+    },
+    {
+        "id": 2,
+        "name": "Bob Smith",
+        "age": 22,
+        "grade": "B+",
+        "major": "Mechanical Engineering"
+    },
+    {
+        "id": 3,
+        "name": "Charlie Lee",
+        "age": 19,
+        "grade": "A-",
+        "major": "Biology"
+    },
+    {
+        "id": 4,
+        "name": "Diana Patel",
+        "age": 21,
+        "grade": "B",
+        "major": "Economics"
+    },
+    {
+        "id": 5,
+        "name": "Ethan Brown",
+        "age": 23,
+        "grade": "C+",
+        "major": "History"
+    }
+]
