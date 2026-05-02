@@ -74,17 +74,16 @@ addresses = [
 ]
 columns = [
     # Employees Fields
-    '''
-    ("id",          "int",   (1, 10_000_000)),
-    ("name",        "str",   ["Alice", "Bob", "Carol", "Dave", "Eve","Jon","Sara","Rob","Che","Arya",""]),
-    ("score",       "float", (0.0, 100.0)),
-    ("is_active",   "bool",  None),
-    ("department",  "str",   ["HR", "Engineering", "Sales", "Marketing"]),
-    ("joined_date", "date",  ("2015-01-01", "2024-12-31")),
-    '''
+    # ("id",          "int",   (1, 10_000_000)),
+    # ("name",        "str",   ["Alice", "Bob", "Carol", "Dave", "Eve","Jon","Sara","Rob","Che","Arya",""]),
+    # ("score",       "float", (0.0, 100.0)),
+    # ("is_active",   "bool",  None),
+    # ("department",  "str",   ["HR", "Engineering", "Sales", "Marketing"]),
+    # ("joined_date", "date",  ("2015-01-01", "2024-12-31")),
+
 
     # Sales Fields
-    ("order_id",     "int", (1, 10_000_000)),
+    ("order_id",     "int", (1000, 11_000)),
     ("item", "str",items),
     ("quantity", "int", (14,555)),
     ("rate","float",(47.50,134002.20)),
@@ -94,7 +93,7 @@ columns = [
 ]
 
 # ── 2. Number of rows to generate ─────────────────────────────────────────────
-NUM_ROWS = 1_000_000
+NUM_ROWS = 10_000
 
 # ── 3. Generator ──────────────────────────────────────────────────────────────
 rng = np.random.default_rng(seed=42)
@@ -128,5 +127,5 @@ print(df.head(10).to_string(index=False))
 print(f"\nShape : {df.shape}")
 print(f"dtypes:\n{df.dtypes}")
 
-df.to_csv("dataFiles/dummy_sales.csv",index=False)
+df.to_csv("pandas/dataFiles/dummy_sales.csv",index=False)
 print("\nSaved → dummy_sales.csv")
