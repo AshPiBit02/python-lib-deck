@@ -73,13 +73,17 @@ addresses = [
     "32 Aurora Drive - Stavanger - Norway", "65 Lighthouse Road - Odense - Denmark", "98 Sauna Court - Turku - Finland",
 ]
 columns = [
-#     ("id",          "int",   (1, 10_000_000)),
-#     ("name",        "str",   ["Alice", "Bob", "Carol", "Dave", "Eve","Jon","Sara","Rob","Che","Arya",""]),
-#     ("score",       "float", (0.0, 100.0)),
-#     ("is_active",   "bool",  None),
-#     ("department",  "str",   ["HR", "Engineering", "Sales", "Marketing"]),
-#     ("joined_date", "date",  ("2015-01-01", "2024-12-31")),
+    # Employees Fields
+    '''
+    ("id",          "int",   (1, 10_000_000)),
+    ("name",        "str",   ["Alice", "Bob", "Carol", "Dave", "Eve","Jon","Sara","Rob","Che","Arya",""]),
+    ("score",       "float", (0.0, 100.0)),
+    ("is_active",   "bool",  None),
+    ("department",  "str",   ["HR", "Engineering", "Sales", "Marketing"]),
+    ("joined_date", "date",  ("2015-01-01", "2024-12-31")),
+    '''
 
+    # Sales Fields
     ("order_id",     "int", (1, 10_000_000)),
     ("item", "str",items),
     ("quantity", "int", (14,555)),
