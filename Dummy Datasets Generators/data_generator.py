@@ -72,6 +72,7 @@ addresses = [
     "21 Zulu Square - Durban - South Africa", "54 Windmill Mews - Utrecht - Netherlands", "87 Viking Place - Malmo - Sweden",
     "32 Aurora Drive - Stavanger - Norway", "65 Lighthouse Road - Odense - Denmark", "98 Sauna Court - Turku - Finland",
 ]
+payment=["Cash On Delivery","credit/debit cards","Apple Pay","Google Pay","Paypal","NFC","Buy now pay later"]
 columns = [
     # Employees Fields
     # ("id",          "int",   (1, 10_000_000)),
@@ -88,7 +89,8 @@ columns = [
     ("quantity", "int", (14,555)),
     ("rate","float",(47.50,134002.20)),
     ("order_data", "date", ("2023-01-23","2026-03-19")),
-    ("delivery_address", "str",addresses )
+    ("delivery_address", "str",addresses ),
+    ("payment_method","str",payment)
 
 ]
 
