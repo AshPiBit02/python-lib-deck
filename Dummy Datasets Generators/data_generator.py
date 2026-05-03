@@ -82,6 +82,7 @@ df = df[cols]
 print(df.head(10).to_string(index=False))
 print(f"\nShape : {df.shape}")
 print(f"dtypes:\n{df.dtypes}")
-
-df.to_csv("pandas/dataFiles/dummy_sales.csv",index=False)
-print("\nSaved → dummy_sales.csv")
+file=input("Enter file name: ")
+file_name="dataFiles/"+file
+df.to_csv(file_name,index=False)
+print(f"\nSaved → {file}")
