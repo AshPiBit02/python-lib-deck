@@ -1,0 +1,23 @@
+order_id,customer_id,city,product,category,price,quantity,order_date,payment_method
+ORD-78421,C101,Kathmandu,Laptop,Electronics,800,1,2024-01-05,Credit Card
+ORD-78422,C102,Pokhara,Rice,Groceries,20,5,2024-01-06,Cash
+ORD-78423,C103,Lalitpur,T-shirt,Clothing,15,3,2024-01-07,eSewa
+ORD-78424,C104,Bhaktapur,Shampoo,Personal Care,8,2,2024-01-08,Khalti
+ORD-78425,C105,Biratnagar,Phone,Electronics,500,1,2024-01-10,Credit Card
+ORD-78426,C106,Butwal,Oil,Groceries,10,4,2024-01-12,Cash
+ORD-78427,C101,Kathmandu,Jeans,Clothing,25,2,2024-01-15,eSewa
+ORD-78428,C102,Lalitpur,Facewash,Personal Care,6,3,2024-01-18,Khalti
+ORD-78429,C107,Bharatpur,Tablet,Electronics,300,1,2024-01-20,Credit Card
+ORD-78430,C108,Dharan,Biscuits,Groceries,2,10,2024-01-22,Cash
+ORD-78431,C109,Pokhara,Shoes,Clothing,40,1,2024-01-25,eSewa
+ORD-78450,C125,Birgunj,Shoes,Clothing,80,3,2024-05-22,NaN
+ORD-78432,C110,Hetauda,Soap,Personal Care,3,5,2024-01-28,Khalti
+ORD-78433,C111,Kathmandu,Monitor,Electronics,200,1,2024-02-01,Credit Card
+ORD-78434,C112,Biratnagar,Rice,Groceries,20,3,2024-02-03,Cash
+ORD-78435,C113,Butwal,T-shirt,Clothing,15,2,2024-02-05,eSewa
+ORD-78436,C114,Bharatpur,Shampoo,Personal Care,8,4,2024-02-07,Khalti
+ORD-78437,C115,Kathmandu,Phone,Electronics,500,2,2024-02-10,Credit Card
+ORD-78438,C116,Dharan,Oil,Groceries,10,6,2024-02-12,Cash
+ORD-78439,C117,Pokhara,Jeans,Clothing,25,1,2024-02-15,eSewa
+ORD-78440,C118,Hetauda,Soap,Personal Care,3,8,2024-02-18,Khalti
+ORD-78440,C118,Hetauda,Soap,Personal Care,3,8,2024-02-18,Khalti
