@@ -38,7 +38,7 @@ columns = [
 ]
 
 # ── 2. Number of rows to generate ─────────────────────────────────────────────
-NUM_ROWS = 1_000
+NUM_ROWS = 100
 
 # ── 3. Generator ──────────────────────────────────────────────────────────────
 rng = np.random.default_rng(seed=42)
@@ -82,7 +82,27 @@ df = df[cols]
 print(df.head(10).to_string(index=False))
 print(f"\nShape : {df.shape}")
 print(f"dtypes:\n{df.dtypes}")
-file=input("Enter file name: ")
-file_name="dataFiles/"+file
-df.to_csv(file_name,index=False)
-print(f"\nSaved → {file}")
+
+file_name = input("File name to create: ")
+file_type = file_name.split(".")[1]
+file_created = True
+
+if file_type == "csv":
+    df.to_csv(f"dataFiles/{file_name}", index=False)
+elif file_type == "json":
+    df_json=df.copy()
+    for col in df_json.select_dtypes(include="datetime").columns:
+        df_json[col]=df_json[col].dt.strftime("%Y-%m-%d")
+    df_json.to_json(f"dataFiles/{file_name}", orient="records", indent=2)
+elif file_type == "xlsx":
+    df_excel = df.copy()
+    for col in df_excel.select_dtypes(include="datetime").columns:
+        df_excel[col] = df_excel[col].dt.strftime("%Y-%m-%d")
+    df_excel.to_excel(f"dataFiles/{file_name}", index=False)
+else:
+    print("Error: Unknown File Format!")
+    file_created = False
+
+if file_created:
+    print('-' * 40)
+    print(f"File [{file_name}] Created!")
