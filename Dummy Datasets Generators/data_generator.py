@@ -31,9 +31,9 @@ columns = [
     ("item", "str",items),
     ("quantity", "int", (14,555)),
     ("rate","float",(1.25,282.20)),
-    ("order_data", "date", ("2023-01-23","2026-03-19")),
-    ("delivery_address", "str",addresses ),
-    ("payment_method","str",payment)
+    # ("order_data", "date", ("2023-01-23","2026-03-19")),
+    # ("delivery_address", "str",addresses ),
+    # ("payment_method","str",payment)
 
 ]
 
