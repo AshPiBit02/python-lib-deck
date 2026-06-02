@@ -1,8 +1,5 @@
 # NumPy — Introduction
 
-> **Series:** Python Data Science | **File:** 01 — Introduction  
-> **Prerequisites:** Python basics, Pandas (done ✅)
-
 ---
 
 ## Table of Contents
