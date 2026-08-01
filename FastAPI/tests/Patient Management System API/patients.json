@@ -1,0 +1,132 @@
+{
+  "P001": {
+    "name": "Ram Shrestha",
+    "city": "Kathmandu",
+    "age": 32,
+    "gender": "Male",
+    "height": 170,
+    "weight": 68,
+    "bmi": 23.5,
+    "verdict": "Healthy"
+  },
+  "P002": {
+    "name": "Sita Gurung",
+    "city": "Pokhara",
+    "age": 28,
+    "gender": "Female",
+    "height": 160,
+    "weight": 75,
+    "bmi": 29.3,
+    "verdict": "Overweight"
+  },
+  "P003": {
+    "name": "Hari Koirala",
+    "city": "Biratnagar",
+    "age": 45,
+    "gender": "Male",
+    "height": 175,
+    "weight": 90,
+    "bmi": 29.4,
+    "verdict": "Overweight"
+  },
+  "P004": {
+    "name": "Anita Lama",
+    "city": "Lalitpur",
+    "age": 22,
+    "gender": "Female",
+    "height": 155,
+    "weight": 48,
+    "bmi": 19.9,
+    "verdict": "Healthy"
+  },
+  "P005": {
+    "name": "Bikash Thapa",
+    "city": "Chitwan",
+    "age": 36,
+    "gender": "Male",
+    "height": 180,
+    "weight": 95,
+    "bmi": 29.3,
+    "verdict": "Overweight"
+  },
+  "P006": {
+    "name": "Maya Rai",
+    "city": "Dharan",
+    "age": 40,
+    "gender": "Female",
+    "height": 162,
+    "weight": 85,
+    "bmi": 32.4,
+    "verdict": "Obese"
+  },
+  "P007": {
+    "name": "Kiran KC",
+    "city": "Bhaktapur",
+    "age": 30,
+    "gender": "Male",
+    "height": 168,
+    "weight": 60,
+    "bmi": 21.3,
+    "verdict": "Healthy"
+  },
+  "P008": {
+    "name": "Sunita Magar",
+    "city": "Hetauda",
+    "age": 27,
+    "gender": "Female",
+    "height": 158,
+    "weight": 50,
+    "bmi": 20.0,
+    "verdict": "Healthy"
+  },
+  "P009": {
+    "name": "Prakash Adhikari",
+    "city": "Butwal",
+    "age": 50,
+    "gender": "Male",
+    "height": 172,
+    "weight": 82,
+    "bmi": 27.7,
+    "verdict": "Overweight"
+  },
+  "P010": {
+    "name": "Rita Tamang",
+    "city": "Janakpur",
+    "age": 35,
+    "gender": "Female",
+    "height": 165,
+    "weight": 70,
+    "bmi": 25.7,
+    "verdict": "Overweight"
+  },
+  "P011": {
+    "name": "Deepak Shahi",
+    "city": "Nepalgunj",
+    "age": 29,
+    "gender": "Male",
+    "height": 178,
+    "weight": 72,
+    "bmi": 22.7,
+    "verdict": "Healthy"
+  },
+  "P012": {
+    "name": "Laxmi Khadka",
+    "city": "Dhangadhi",
+    "age": 42,
+    "gender": "Female",
+    "height": 160,
+    "weight": 95,
+    "bmi": 37.1,
+    "verdict": "Obese"
+  },
+  "P013": {
+    "name": "Nabin Basnet",
+    "city": "Ilam",
+    "age": 24,
+    "gender": "Male",
+    "height": 174,
+    "weight": 64,
+    "bmi": 21.1,
+    "verdict": "Healthy"
+  }
+}
