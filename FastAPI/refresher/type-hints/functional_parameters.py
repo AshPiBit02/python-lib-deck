@@ -45,6 +45,6 @@ demo(10,"Aashish",[1,2,3],True)
 
 # *kwargs usage
 from typing import Union,Dict
-def student_info(**kwargs:Union[str,int])->Dict[str,Union[str,int]]:
+def student_info(**kwargs)->Dict[str,Union[str,int]]:
     return kwargs
-print(student_info(name="Jon",age=21,name="Rob",age=23))
+print(student_info(name=["Jon","Rob"],age=[21,23]))
