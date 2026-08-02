@@ -16,3 +16,11 @@ def student_score(score: int|str):
         return {"Numeric Score":numeric_score}
     except(ValueError,TypeError):
         return {"Grade Letter":score}
+
+@app.get("/student/contact/")
+def student_contact(contact: int|str):
+    try:
+        phone_no=int(contact)
+        return {"Phone_no":contact}
+    except(ValueError,TypeError):
+        return {"Email":contact}
