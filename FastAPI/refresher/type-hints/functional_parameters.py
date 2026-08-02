@@ -1,72 +1,91 @@
-def greet(name:str,age:int)->str:
-    if age<18:
-        return f"Hello {name}, you are naive."
-    else:
-        return f"Hello {name}, you are inexperienced."
-print(greet("Aashish",21)) 
+# def greet(name:str,age:int)->str:
+#     if age<18:
+#         return f"Hello {name}, you are naive."
+#     else:
+#         return f"Hello {name}, you are inexperienced."
+# print(greet("Aashish",21)) 
 
-def add(num1:int,num2:int)->int:
-    return num1+num2
+# def add(num1:int,num2:int)->int:
+#     return num1+num2
 
-# Default parameters
-def greet(name:str="Sir",greeting:str="Hello")->str:
-    return f"{greeting}!, {name}"
+# # Default parameters
+# def greet(name:str="Sir",greeting:str="Hello")->str:
+#     return f"{greeting}!, {name}"
 
-# print(greet())
-# print(greet("Aashish"))
+# # print(greet())
+# # print(greet("Aashish"))
 
-# *args usage
-def multiply_all(*args:int)->int:
-    product=1
-    for num in args:
-        product*=num
-    return product
+# # *args usage
+# def multiply_all(*args:int)->int:
+#     product=1
+#     for num in args:
+#         product*=num
+#     return product
 
-print(multiply_all(2,3,4))
-
-
-# Any
-
-from typing import Any
-def add_all(*args:Any)->Any:
-    result="fasd"
-    for values in args:
-        result+=values
-    return result
-
-print(add_all("sd","asf","fasd"))
-
-def demo(*args:Any)->None:
-    for item in args:
-        print(f"Value:{item},Type:{type(item).__name__}")
-
-demo(10,"Aashish",[1,2,3],True)
+# print(multiply_all(2,3,4))
 
 
-# *kwargs usage
-from typing import Union,Dict
-def student_info(**kwargs)->Dict[str,Union[str,int]]:
-    return kwargs
-print(student_info(name=["Jon","Rob"],age=[21,23]))
+# # Any
+
+# from typing import Any
+# def add_all(*args:Any)->Any:
+#     result="fasd"
+#     for values in args:
+#         result+=values
+#     return result
+
+# print(add_all("sd","asf","fasd"))
+
+# def demo(*args:Any)->None:
+#     for item in args:
+#         print(f"Value:{item},Type:{type(item).__name__}")
+
+# demo(10,"Aashish",[1,2,3],True)
 
 
-# Task1
-def grade_students(name:str,marks:list[int])->Dict[str,object]:
+# # *kwargs usage
+# from typing import Union,Dict
+# def student_info(**kwargs)->Dict[str,Union[str,int]]:
+#     return kwargs
+# print(student_info(name=["Jon","Rob"],age=[21,23]))
+
+
+# # Task1
+# def grade_students(name:str,marks:list[int])->Dict[str,object]:
+#     total_marks=sum(marks)
+#     avg=total_marks/len(marks)
+#     passed=avg>40
+#     grade = "A" if avg > 90 else \
+#         "B" if avg > 80 else \
+#         "B" if avg > 70 else \
+#         "C" if avg > 50 else \
+#         "D" if avg > 40 else "F"
+
+
+#     return{
+#         "Name":name,"Average":avg,"Grade":grade,"Passed":passed
+#     }
+
+# print(grade_students("Jon",[90,89,94]))
+# print(grade_students("Rob",[50,29,34]))
+
+# Student Registration System with Validation
+
+def register_name(name:str,age:int,marks: list[int])->dict:
+    if age<5:
+        raise ValueError("Age must be at least 5")
+    if not marks: # Empty
+        raise ValueError("Marks list cannont be empty")
     total_marks=sum(marks)
     avg=total_marks/len(marks)
-    passed=avg>40
     grade = "A" if avg > 90 else \
         "B" if avg > 80 else \
-        "B" if avg > 70 else \
-        "C" if avg > 50 else \
-        "D" if avg > 40 else "F"
-
-
-    return{
-        "Name":name,"Average":avg,"Grade":grade,"Passed":passed
+        "C" if avg > 70 else \
+        "D" if avg > 50 else "F"
+    passed=True if grade !="F" else False
+    return {
+        "Name":name,"Age":age,"Average marks":avg,"Grade":grade,"Passed":passed
     }
 
-print(grade_students("Jon",[90,89,94]))
-print(grade_students("Rob",[50,29,34]))
-
+print(register_name("Aashish",21,[99,98,89,93,95]))
         
