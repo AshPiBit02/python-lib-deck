@@ -55,8 +55,15 @@ def grade_students(name:str,marks:list[int])->Dict[str,object]:
     total_marks=sum(marks)
     avg=total_marks/len(marks)
     passed=avg>40
+    grade = "A" if avg > 90 else \
+        "B" if avg > 80 else \
+        "B" if avg > 70 else \
+        "C" if avg > 50 else \
+        "D" if avg > 40 else "F"
+
+
     return{
-        "Name":name,"Average":avg,"Passed":passed
+        "Name":name,"Average":avg,"Grade":grade,"Passed":passed
     }
 
 print(grade_students("Jon",[90,89,94]))
