@@ -11,7 +11,8 @@ def student_identifier(id:Union[int,str],active:Union[bool,str]):
 
 @app.get("/student/score")
 def student_score(score: int|str):
-    if isinstance(score,str):
-        return {"Numeric Score":score}
-    else:
+    try:
+        numeric_score=int(score)
+        return {"Numeric Score":numeric_score}
+    except(ValueError,TypeError):
         return {"Grade Letter":score}
