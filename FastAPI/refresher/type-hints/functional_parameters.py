@@ -48,3 +48,18 @@ from typing import Union,Dict
 def student_info(**kwargs)->Dict[str,Union[str,int]]:
     return kwargs
 print(student_info(name=["Jon","Rob"],age=[21,23]))
+
+
+# Task1
+def grade_students(name:str,marks:list[int])->Dict[str,object]:
+    total_marks=sum(marks)
+    avg=total_marks/len(marks)
+    passed=avg>40
+    return{
+        "Name":name,"Average":avg,"Passed":passed
+    }
+
+print(grade_students("Jon",[90,89,94]))
+print(grade_students("Rob",[50,29,34]))
+
+        
