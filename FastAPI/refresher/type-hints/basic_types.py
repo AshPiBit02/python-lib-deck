@@ -9,9 +9,10 @@ def get_student(id:int,name:str,passed:bool,gpa:float):
 print(get_student(2005,"Aashish",True,3.97))
 
 
-@app.get("/student/{roll}/{name}/{attendance}")
-def get_student_attendance(roll:int,name:str,attendance:bool):
+@app.get("/student/{roll}/{name}/{attendance}/{percentage}")
+def get_student_attendance(roll:int,name:str,attendance:bool,percentage:float):
+    passed=percentage>=40
     return {
-        "Roll no.":roll,"Name":name,"Attendance":attendance
+        "Roll no.":roll,"Name":name,"Attendance":attendance,"Passed":passed
     }
 
