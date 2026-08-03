@@ -1,5 +1,7 @@
 from typing import Callable
 
+
+# Typing a function as a value
 def apply_operation(a:int, b:int, operation:Callable[[int,int],int])->int:
     return operation(a,b);
 
@@ -38,3 +40,20 @@ def deposit(amount:int):
 
 transaction(500,withdraw)
 transaction(700,deposit)
+
+
+# Function that returns a function
+def make_multiplier(factor:int)->Callable[[int],int]:
+    def multiplier(x:int)->int:
+        return x*factor
+    return multiplier
+times_four: Callable[[int],int]=make_multiplier(4)
+print(times_four(7))
+
+
+def num1(x:int)->Callable[[int],int]:
+    def num2(y:int)->int:
+        return x+y
+    return num2
+adder:Callable[[int],int]=num1(10)
+print(adder(20))
