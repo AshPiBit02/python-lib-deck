@@ -116,3 +116,17 @@ print("Even numbers: ",evens)
 greater_than10=filter_items(numbers,lambda x:x>10)
 print("Number greater than 10: ",greater_than10)
 
+
+
+def process_students(students:list[tuple[str,int]],filter_func:Callable[[int],bool],transform_func:Callable[[str,int],str])->list[str]:
+    return [transform_func(name,score) for name, score in students if filter_func(score)]
+
+students=[("Jon",85),("Rob",56),("Col",98)]
+# filter: socre>=60
+filter_func=lambda x:x>60
+
+#transform: {name}: passed({score})
+transform_func=lambda name,score: f"{name}: Pass ({score})"
+
+result=process_students(students,filter_func,transform_func)
+print(result)
