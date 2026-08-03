@@ -24,6 +24,12 @@ def student_courses(courses:str):
     course_list=[int(x) for x in courses.split(",")]
     return {"Course Count":len(course_list)}
 
+from fastapi import Query
+from typing import Optional
 @app.get("/student/profile")
-def student_profile(name: str, age: int, skills: List[str]):
-    return {"Name": name, "Age": age, "Skills": skills}
+def student_profile(
+    name: str,
+    age: int,
+    skills: Optional[List[str]] = Query(default=None)
+):
+    return {"Name": name, "Age": age, "Skills": skills or []}
