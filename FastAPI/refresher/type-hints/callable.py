@@ -57,3 +57,62 @@ def num1(x:int)->Callable[[int],int]:
     return num2
 adder:Callable[[int],int]=num1(10)
 print(adder(20))
+
+
+# Practice
+def average(*numbers:float)->float:
+    if not numbers:
+        return 0.0
+    total=sum(numbers)
+    return total/len(numbers)
+print("Average: ",average(1.2,3.2,4,3.4))
+
+
+def describe_person(**info: str) -> str:
+    return ", ".join(f"{key}:{value}" for key,value in info.items())
+print(describe_person(name="Aashish",university="Pokhara University",age=21))
+
+def apply_twice(func:Callable[[int],int],value:int)->int:
+    return func(func(value))
+
+def square(num:int)->int:
+    return num*num
+
+def increment(num:int)->int:
+    return num+1
+
+# calling with a named function
+print("Square: ",apply_twice(increment,5))
+# calling with a Lambda
+print("Lambda: ",apply_twice(lambda x:x+10,5))
+# calling with callable class
+class Multiplier:
+    def __init__(self,factor:int):
+        self.factor=factor
+    def __call__(self,x:int)->int:
+        return x * self.factor
+double = Multiplier(2)
+print("Callable class: ",apply_twice(double,5))
+
+
+def make_validator(min_length:int)->Callable[[str],bool]:
+    def validator(s:str)->bool:
+        return len(s)>=min_length
+    return validator
+
+validator_min3=make_validator(3)
+validator_min8=make_validator(8)
+print("Min 3 chars, 'Hi': ",validator_min3("Hi"))
+print("Min 3 chars, 'Hiiiii': ",validator_min3("Hiiiii"))
+print("Min 8 chars, 'abcdefgsfa': ",validator_min8("abcdefgsfa"))
+
+def filter_items(items:list[int],predicate: Callable[[int],bool])->list[int]:
+    return [item for item in items if predicate(item)]
+
+numbers=[1,32,81,4,28,6,7]
+evens=filter_items(numbers,lambda x:x%2==0)
+print("Even numbers: ",evens)
+
+greater_than10=filter_items(numbers,lambda x:x>10)
+print("Number greater than 10: ",greater_than10)
+
