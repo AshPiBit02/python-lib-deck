@@ -17,3 +17,13 @@ def student_record(name: str, age: int):
         return {"Result": "Valid", "Record": record}
     else:
         return {"Result": "Invalid"}
+
+
+@app.get("/student/courses")
+def student_courses(courses:str):
+    course_list=[int(x) for x in courses.split(",")]
+    return {"Course Count":len(course_list)}
+
+@app.get("/student/profile")
+def student_profile(name: str, age: int, skills: List[str]):
+    return {"Name": name, "Age": age, "Skills": skills}
