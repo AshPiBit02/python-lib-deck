@@ -84,3 +84,24 @@ def increment(n:None)->None:
     num=num+1
     print(f"Count: {num}")
 increment(num)
+
+
+# Class-based decorators
+
+class CountCalls:
+    def __init__(self,func:Callable)->None:
+        self.func=func
+        self.count=0
+
+    def __call__(self,*args:Any,**kwargs:Any)->Any:
+        self.count+=1
+        print(f"Call #{self.count} to {self.func.__name__}")
+        return self.func(*args,**kwargs)
+
+@CountCalls
+def say_hi()->None:
+    print("Hi")
+say_hi()
+say_hi()
+say_hi()
+say_hi()
