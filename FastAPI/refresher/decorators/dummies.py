@@ -114,5 +114,33 @@ def calculate_area(length:float,width:float)->float:
 
 print(calculate_area(3,2))
 print(calculate_area(length=8,width=8))
-print(calculate_area("five",9))
+# print(calculate_area("five",9))
 
+
+# Mini FastAPI simulation(A tiny mock router)
+
+routes:dict[str,Callable]={}
+def route(path:str)->Callable:
+    def decorator(func:Callable)->Callable:
+        routes[path]=func # register func under path
+        return func
+    return decorator
+
+@route("/hello")
+def hello()->str:
+    return "Hello, Sir!"
+
+@route("/bye")
+def bye()->str:
+    return "Bye, Sir!"
+
+@route("/afternoom")
+def afternoon()->str:
+    return "Good Afternoon, Sir!"
+
+@route("/morning")
+def morning()->str:
+    return "Good Morning, Sir!"
+
+print(routes["/hello"]())
+print(routes["/morning"]())
