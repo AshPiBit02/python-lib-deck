@@ -90,4 +90,29 @@ print(getConnectionPool())
 print(getConnectionPool())
 
 
+# Validating arguments via decorator
+
+def validate_positive(func:Callable)->Callable:
+    @wraps(func)
+    def wrapper(*args:Any,**kwargs:Any)->Any:
+        for arg in args:
+            if not isinstance(arg,(int,float)):
+                raise TypeError("All arguments must be numeric!")
+            if isinstance(arg,(int,float)) and arg<=0:
+                raise ValueError("All arguments must be positive!")
+        for key,value in kwargs.items():
+            if not isinstance(value,(int,float)):
+                raise TypeError(f"Argument '{key}' must be numeric!")
+            if value<=0:
+                raise ValueError(f"Argument '{key}' must be positive!")
+        return func(*args,**kwargs)
+    return wrapper
+
+@validate_positive
+def calculate_area(length:float,width:float)->float:
+    return length*width
+
+print(calculate_area(3,2))
+print(calculate_area(length=8,width=8))
+print(calculate_area("five",9))
 
