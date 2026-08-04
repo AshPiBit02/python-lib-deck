@@ -26,3 +26,20 @@ async def main()->None:
     print(f"Took {time.perf_counter()-start:.4f}s")
 
 asyncio.run(main())
+
+# sequential - awaiting one at a time
+async def main_sequential()->None:
+    start=time.perf_counter()
+    await fetch_data("A",2)
+    await fetch_data("B",2)
+    await fetch_data("C",2)
+    print(f"Total(sequential): {time.perf_counter()-start:.4f}")
+asyncio.run(main_sequential())
+
+# concurrent - asyncio.gather():
+async def main_concurrent()->None:
+    start=time.perf_counter()
+    results=await asyncio.gather(fetch_data("A",2),fetch_data("B",2),fetch_data("C",2))
+    print(results)
+    print(f"Total(concurrent): {time.perf_counter()-start:.4f}s")
+asyncio.run(main_concurrent())
