@@ -1,5 +1,6 @@
 from typing import Callable,Any
 import time
+from functools import wraps
 
 # Basic decorator
 def shout(func:Callable)->Callable:
@@ -14,9 +15,10 @@ def greet()->str:
 
 print(greet())
 
-# Decorator with *args,**kwargs
+# Decorator with *args,**kwargs with wraps
 
 def timer(func:Callable)->Callable:
+    @wraps(func)
     def wrapper(*args:Any,**kwargs:Any)->Any:
         start=time.perf_counter()
         result=func(*args,**kwargs)
@@ -29,6 +31,7 @@ def timer(func:Callable)->Callable:
 def work(duration:int=1)->str:
     time.sleep(duration)
     return "done"
+print(work.__name__)
 print(work())
 print(work(duration=2))
 
