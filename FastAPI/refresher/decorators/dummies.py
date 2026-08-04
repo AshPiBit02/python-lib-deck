@@ -1,6 +1,7 @@
 from typing import Callable,Any
 import time
 from functools import wraps
+import random
 
 # Basic decorator
 def shout(func:Callable)->Callable:
@@ -34,4 +35,32 @@ def work(duration:int=1)->str:
 print(work.__name__)
 print(work())
 print(work(duration=2))
+
+
+# Decorator with its own arguments
+
+def retry(times:int)->Callable:
+    def decorator(func:Callable)->Callable:
+        @wraps(func)
+        def wrapper(*args,**kwargs):
+            for attempt in range(1,times+1):
+                try:
+                    result=func(*args,**kwargs)
+                    print(f"Attempt {attempt} success")
+                    return result
+                except Exception as e:
+                    print(f"Attempt {attempt} failed: {e}")
+                    if attempt==times:
+                        print("All attempts failed. Raising exception.")
+                        raise
+        return wrapper
+    return decorator
+
+@retry(times=5)
+def sometimes_fails()->str:
+    if random.random()<0.7:
+        raise ValueError("Random failure occurred!")
+    return "Success!"
+
+print(sometimes_fails())
 
