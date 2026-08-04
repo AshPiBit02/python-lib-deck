@@ -60,3 +60,27 @@ def do_vote(name:str,age:int)->str:
 print(do_vote(name="Jon",age=16))
 
 
+# Decoratros that take their own arguments
+
+def repeat(times:int)->Callable:
+    def decorator(func:Callable)->Callable:
+        @wraps(func)
+        def wrapper(*args:Any,**kwargs:Any)->Any:
+            for _ in range(times):
+                func(*args,**kwargs)
+        return wrapper
+    return decorator
+
+@repeat(times=3)
+def greet(name:str)->None:
+    print(f"Hi {name}")
+greet("Aegon")
+
+
+num = 3
+@repeat(times=3)
+def increment(n:None)->None:
+    global num
+    num=num+1
+    print(f"Count: {num}")
+increment(num)
