@@ -9,7 +9,7 @@ async def main()-> None:
     result=await say_hello()
     print(result)
 
-asyncio.run(main())
+# asyncio.run(main())
 
 # Simulating I/O wait
 
@@ -25,7 +25,7 @@ async def main()->None:
     print(result)
     print(f"Took {time.perf_counter()-start:.4f}s")
 
-asyncio.run(main())
+# asyncio.run(main())
 
 # sequential - awaiting one at a time
 async def main_sequential()->None:
@@ -34,7 +34,7 @@ async def main_sequential()->None:
     await fetch_data("B",2)
     await fetch_data("C",2)
     print(f"Total(sequential): {time.perf_counter()-start:.4f}")
-asyncio.run(main_sequential())
+# asyncio.run(main_sequential())
 
 # concurrent - asyncio.gather():
 async def main_concurrent()->None:
@@ -42,4 +42,16 @@ async def main_concurrent()->None:
     results=await asyncio.gather(fetch_data("A",2),fetch_data("B",2),fetch_data("C",2))
     print(results)
     print(f"Total(concurrent): {time.perf_counter()-start:.4f}s")
-asyncio.run(main_concurrent())
+# asyncio.run(main_concurrent())
+
+# create_task for "fire now, await later":
+async def main1()->None:
+    start=time.perf_counter()
+    task_a=asyncio.create_task(fetch_data("A",2))
+    task_b=asyncio.create_task(fetch_data("B",2))
+    result_a=await task_a
+    result_b=await task_b
+    print(f"Time: {time.perf_counter()-start:.4f}s")
+# asyncio.run(main1())
+
+
