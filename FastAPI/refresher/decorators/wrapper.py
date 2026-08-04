@@ -39,4 +39,24 @@ def greet(name:str,age:int)->str:
 print(greet("Aashish",21))
 
 
+# Preserving function metadata (functools.wraps) -> without it, add.__name__ becomes "wrapper" instead of "add"
+
+from functools import wraps
+
+def logger(func:Callable)->Callable:
+    @wraps(func)
+    def wrapper(*args:Any,**kwargs:Any)->Any:
+        print(f"Calling {func.__name__}")
+        return func(*args,**kwargs)
+    return wrapper
+
+@logger
+def do_vote(name:str,age:int)->str:
+    if age>18:
+        return f"You can vote, {name}"
+    else:
+        return f"You can't vote, {name} kid"
+
+print(do_vote(name="Jon",age=16))
+
 
