@@ -64,3 +64,30 @@ def sometimes_fails()->str:
 
 print(sometimes_fails())
 
+# Class-based decorator with state
+
+class RateLimiter:
+    def __init__(self,func:Callable,max_calls:int=3)->None:
+        self.func=func
+        self.count=0
+        self.max_calls=max_calls
+
+    def __call__(self,*args:Any,**kwargs:Any)->Any:
+        self.count+=1
+        if self.count>self.max_calls:
+            return f"Rate limit exceeded"
+        result=self.func(*args,**kwargs)
+        return f"Pool #{self.count}: {result}"
+
+@RateLimiter
+def getConnectionPool():
+    return "Pool ready"
+
+print(getConnectionPool())
+print(getConnectionPool())
+print(getConnectionPool())
+print(getConnectionPool())
+print(getConnectionPool())
+
+
+
