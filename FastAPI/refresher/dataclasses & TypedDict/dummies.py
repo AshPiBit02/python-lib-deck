@@ -40,3 +40,29 @@ class Point:
 p=Point(1,2)
 # p.x=2 # raises FrozenInstanceError - immutable,frozen makes instances immutable
 
+
+# TypedDict - the basics
+from typing import TypedDict
+
+class StudentDict(TypedDict):
+    name:str
+    grade:int
+    passed:bool
+s:StudentDict={"name":"Aegon","grade":95,"Passed":True}
+# s1:StudentDict{"name":"Daemon","grade":"ninety-nine","Passed":True} # no runtime validation
+# print(s["name"])
+
+class StudentDict(TypedDict,total=False): # total=False allows different dtypes
+    name:str
+    grade:int
+s:StudentDict={"name":"Aegon","grade":"two"}
+# print(s["grade"])
+
+from typing import NotRequired
+class StudentDict(TypedDict):
+    name:str
+    grade:NotRequired[int]
+s:StudentDict={"name":"Snow","grade":3.3}
+# print(s["grade"])
+
+
