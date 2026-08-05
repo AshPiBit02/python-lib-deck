@@ -27,10 +27,16 @@ async def fetch_item(item_id:int,delay:float)->str:
     await asyncio.sleep(delay)
     return f"fetched successful for item_ID:{item_id}"
 
-async def main3()->None:
+async def main3_serial()->None:
     print(await fetch_item(512,1))
     print(await fetch_item(513,1))
     print(await fetch_item(514,1))
     print(await fetch_item(515,1))
     print(await fetch_item(516,1))
-asyncio.run(main3())
+# asyncio.run(main3_serial())
+
+async def main3_concurrent()->None:
+    results=await asyncio.gather(fetch_item(512,1),fetch_item(513,1),fetch_item(514,1),fetch_item(515,1),fetch_item(516,1))
+    for r in results:
+        print(r)
+asyncio.run(main3_concurrent())
