@@ -70,4 +70,29 @@ async def main4()->None:
     for completed in asyncio.as_completed(tasks):
         result=await completed
         print(result)
-asyncio.run(main4())
+# asyncio.run(main4())
+
+# Error handling in concurrent calls
+async def good_task(name:str,delay:float)->str:
+    await asyncio.sleep(delay)
+    return f"{name} finished after {delay}s"
+
+async def bad_task(name:str,delay:float)->str:
+    await asyncio.sleep(delay)
+    raise ValueError(f"{name} failed after {delay}s")
+
+async def main5()->None:
+    coros=[good_task("Task A",1),bad_task("Task B",2),good_task("Task C",3)]
+    print("-"*5," With return_exception=True","-"*5)
+    results = await asyncio.gather(*coros,return_exceptions=True)
+    for r in results:
+        print("Result: ",r)
+
+    print("-"*5," With return_exception","-"*5)
+    try:
+        results=await asyncio.gather(*coros)
+        print(results)
+    except Exception as e:
+        print("Caught exception:",e)
+
+asyncio.run(main5())    
