@@ -12,6 +12,8 @@ Typical headers:
 from fastapi import FastAPI
 app=FastAPI()
 
+
+# Static Route
 @app.get("/")
 def home():
     return {"message":"Hello Sir!"}
