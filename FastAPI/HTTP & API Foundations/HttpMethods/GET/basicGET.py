@@ -39,3 +39,23 @@ def profile():
     return{
         "name":"Rhaena","age":21,"skills":["python","C++","JAVA","C","SQL"],"address":{"city":"Pokhara","country":"Nepal"}    
     }
+
+@app.get("/city")
+def get_city():
+    return "Pokhara"
+
+@app.get("/college")
+def get_college():
+    return "Pokhara Engineering College"
+
+@app.get("/numbers")
+def get_numbers():
+    return [1,2,3,4,5]
+
+@app.get("/employee")
+def get_employee():
+    return {"name":"employee 101","salary":20000,"department":"HR","skills":["decision making","leadership","fluent communication","presuasive"]}
+
+@app.get("/books")
+def get_books():
+    return {"books":["Into the Wild","Atomice Habbits","48 Laws of Power"]}
