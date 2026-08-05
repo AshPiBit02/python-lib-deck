@@ -61,4 +61,13 @@ async def main3_create_task()->None:
     resultE=await taskE
     print(resultE)
     print(f"Time took: {time.perf_counter()-start:.4f}")
-asyncio.run(main3_create_task())
+# asyncio.run(main3_create_task())
+
+# Handling results as they complete
+async def main4()->None:
+    tasks=[fetch_item(100,3),fetch_item(101,1),fetch_item(102,2)]
+
+    for completed in asyncio.as_completed(tasks):
+        result=await completed
+        print(result)
+asyncio.run(main4())
