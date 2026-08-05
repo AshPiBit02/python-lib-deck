@@ -99,7 +99,19 @@ async def main5()->None:
 # asyncio.run(main5())    
 
 
-# Mini weather aggregator
+# Mini weather aggregator with decorator
+
+from functools import wraps
+def async_timer(func):
+    @wraps(func)
+    async def wrapper(*args,**kwargs):
+        start=time.perf_counter()
+        result=await func(*args,**kwargs)
+        end = time.perf_counter()
+        print(f"{func.__name__} took {end-start:.4f}s")
+        return result
+    return wrapper
+@async_timer
 async def fetch_weather(city:str)->dict:
     delay=random.uniform(0.5,2)
     await asyncio.sleep(delay)
@@ -118,3 +130,6 @@ async def main6():
     for r in returns:
         print(r)
 asyncio.run(main6())
+
+
+
