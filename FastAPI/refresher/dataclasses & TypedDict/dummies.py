@@ -65,4 +65,21 @@ class StudentDict(TypedDict):
 s:StudentDict={"name":"Snow","grade":3.3}
 # print(s["grade"])
 
+# Converting between them
+
+from dataclasses import asdict
+
+@dataclass
+class Student:
+    name:str
+    grade:int
+s=Student("Alicent",89)
+d:dict=asdict(s) # dataclass to dict
+print(d["name"])
+
+s2=Student(**d) # unpack dict into keyword args
+print(s2)
+
+
+
 
