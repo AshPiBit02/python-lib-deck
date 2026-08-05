@@ -37,3 +37,5 @@ async def main():
         print(r)
 
 asyncio.run(main())
+top_student=max(students, key=lambda s:s.grade)
+print(f"{len(passed_students)} passed, {len(failed_students)} failed, Top scorer: {top_student.name} ({top_student.grade})")
