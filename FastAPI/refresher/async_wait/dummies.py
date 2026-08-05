@@ -39,4 +39,26 @@ async def main3_concurrent()->None:
     results=await asyncio.gather(fetch_item(512,1),fetch_item(513,1),fetch_item(514,1),fetch_item(515,1),fetch_item(516,1))
     for r in results:
         print(r)
-asyncio.run(main3_concurrent())
+# asyncio.run(main3_concurrent())
+
+# create_task()
+async def main3_create_task()->None:
+    start=time.perf_counter()
+    taskA=asyncio.create_task(fetch_item(512,1.5))
+    taskB=asyncio.create_task(fetch_item(513,1.5))
+    taskC=asyncio.create_task(fetch_item(514,1.5))
+    taskD=asyncio.create_task(fetch_item(515,1.5))
+    taskE=asyncio.create_task(fetch_item(516,1.5))
+
+    resultA=await taskA
+    print(resultA)
+    resultB=await taskB
+    print(resultB)
+    resultC=await taskC
+    print(resultC)
+    resultD=await taskD
+    print(resultD)
+    resultE=await taskE
+    print(resultE)
+    print(f"Time took: {time.perf_counter()-start:.4f}")
+asyncio.run(main3_create_task())
