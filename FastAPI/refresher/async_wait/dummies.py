@@ -1,5 +1,6 @@
 import asyncio
 import time
+import random
 # Basic coroutine
 async def get_greeting(name:str)->str:
     return f"Hello, {name}!"
@@ -95,4 +96,25 @@ async def main5()->None:
     except Exception as e:
         print("Caught exception:",e)
 
-asyncio.run(main5())    
+# asyncio.run(main5())    
+
+
+# Mini weather aggregator
+async def fetch_weather(city:str)->dict:
+    delay=random.uniform(0.5,2)
+    await asyncio.sleep(delay)
+    return {"city":city,"temp":random.randint(15,35)}
+
+async def compare_weather(cities:list[str])->list[dict]:
+    start=time.perf_counter()
+    results=await asyncio.gather(*(fetch_weather(city) for city in cities))
+    end=time.perf_counter()
+    print(f"Total time: {end-start:.4f}s")
+    return results
+
+async def main6():
+    cities=["London","Paris","Tokyo","Kathmandu"]
+    returns= await compare_weather(cities)
+    for r in returns:
+        print(r)
+asyncio.run(main6())
