@@ -55,3 +55,12 @@ def get_emp_with_more_salary(salary:float):
     if results:
         return results
     return {"error":f"No employees found found with salary more than {salary}$"}
+
+# Optional Query Parameters
+@app.get("/employees")
+def empByID(emp_id:str|None=None):
+    if emp_id is None:
+        return employees
+    if emp_id in employees:
+        return employees[emp_id]
+    return {"error":f"No employee found with ID {emp_id}"}
