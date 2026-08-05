@@ -52,7 +52,7 @@ s:StudentDict={"name":"Aegon","grade":95,"Passed":True}
 # s1:StudentDict{"name":"Daemon","grade":"ninety-nine","Passed":True} # no runtime validation
 # print(s["name"])
 
-class StudentDict(TypedDict,total=False): # total=False allows different dtypes
+class StudentDict(TypedDict,total=False): # total=False -> no need to give value to all fileds
     name:str
     grade:int
 s:StudentDict={"name":"Aegon","grade":"two"}

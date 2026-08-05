@@ -34,3 +34,35 @@ class Credentials:
     balance:float
 cre1=Credentials(444,983.22)
 # cre1.account_no=434 # error(immutable) 
+
+from typing import TypedDict
+# Basic TypedDict
+class Movie(TypedDict):
+    title:str
+    year:int
+    rating:float
+movie:dict={"title":"Spider-Man: Brand New Day","year":2026,"rating":9.8}
+print(movie["title"])
+print(movie)
+fakemovie:dict={"title":"Spider-Man: Brand New Day","year":2026,"rating":"full"}
+print(fakemovie["rating"]) # is invalid but doesn't raise error because python ignores type hints at runtime
+
+# Optional Keys in TypedDict
+from typing import NotRequired
+class UserProfile(TypedDict):
+    username:str
+    email:str
+    bio:NotRequired[str]
+u1:UserProfile={"username":"Lianna","email":"lianna@gmail.com"}
+u2:UserProfile={"username":"Hodor","email":"holdthedoor@gmail.com","bio":"Coder & learner"}
+print(u1)
+print(u2)
+
+# dataclass to dict conversion and viceversa
+from dataclasses import asdict
+book1Dict:dict=asdict(b1)
+print(book1Dict["title"])
+
+# back to dataclass
+b1New=Book(**book1Dict)
+print(b1New)
