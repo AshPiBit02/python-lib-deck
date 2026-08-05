@@ -35,7 +35,7 @@ class Credentials:
 cre1=Credentials(444,983.22)
 # cre1.account_no=434 # error(immutable) 
 
-from typing import TypedDict
+from typing import List, TypedDict
 # Basic TypedDict
 class Movie(TypedDict):
     title:str
@@ -66,3 +66,42 @@ print(book1Dict["title"])
 # back to dataclass
 b1New=Book(**book1Dict)
 print(b1New)
+
+
+# Combined dataclass+TypedDict+async
+import asyncio
+
+# Raw incoming data schema
+class RawStudentData(TypedDict):
+    name:str
+    socre:int
+
+# processed internal object
+@dataclass
+class Student:
+    name:str
+    score:int
+    passed:bool
+
+async def process_student(raw:RawStudentData)->Student:
+    print("Processing raw student data.....")
+    await asyncio.sleep(1)
+    passed=raw["score"]>=60
+    return Student(name=raw["name"],score=raw["score"],passed=passed)
+
+async def process_all(raw_students:List[RawStudentData])->List[Student]:
+    results=await asyncio.gather(*(process_student(r) for r in raw_students))
+    return results
+
+async def main()->None:
+    raw_students=[
+         {"name": "Alice", "score": 85},
+        {"name": "Bob", "score": 40},
+        {"name": "Charlie", "score": 72},
+        {"name": "Diana", "score": 55},
+    ]
+    students=await process_all(raw_students)
+    for s in students:
+        print(s)
+
+asyncio.run(main())
