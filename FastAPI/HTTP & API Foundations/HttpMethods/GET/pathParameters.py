@@ -43,4 +43,15 @@ def get_emp_by_dept_age(dept:str,age:int):
     if results:
         return results
     return {"error":f"No employees found in {dept} under age {age}"}
-        
+
+# Query Parameters
+
+@app.get("/employees")
+def get_emp_with_more_salary(salary:float):
+    results=[]
+    for emp_id,emp in employees.items():
+        if emp["salary"]>salary:
+            results.append({emp_id:emp})
+    if results:
+        return results
+    return {"error":f"No employees found found with salary more than {salary}$"}
