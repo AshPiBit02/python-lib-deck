@@ -94,15 +94,20 @@ def sort_students(order:str):
 @app.get("/students/filter/department/{dept}/rank/{rank}")
 def get_student_by_rank(dept:str,rank:int):
     if dept.lower()=="all":
-        result=sorted(students,key=lambda x:x["cgpa"],reverse=True)[rank-1]
-        return result
+        sorted_students=sorted(students,key=lambda x:x["cgpa"],reverse=True)[rank-1]
+        if 0<rank <=len(sorted_students):
+            return sorted_students[rank-1]
+        else:
+            return {"message":f"rank {rank} out of bound!"}
     results=[
         student for student in students if student["department"].lower()==dept.lower()
         ]
-    results=sorted(results,key=lambda x:x["cgpa"],reverse=True)
-    if results:
-        return results[rank-1]
+    if not results:
+        return {"message":f"unknown department {dept}!"}
+    sorted_students=sorted(results,key=lambda x:x["cgpa"],reverse=True)
+    if 0<rank<=len(sorted_students):
+        return sorted_students[rank-1]
     else:
-        return {"message":f"unknown deptartment {dept} or rank out of bound {rank}"}
+        return {"message":f"rank {rank} out of bound for department {dept}!"}
 
 
