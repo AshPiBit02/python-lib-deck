@@ -89,3 +89,20 @@ def sort_students(order:str):
         return sorted(students,key=lambda x:x["cgpa"],reverse=True)
     else:
         return {"message":f"unknown order {order}"}
+
+# Multiple filter
+@app.get("/students/filter/department/{dept}/rank/{rank}")
+def get_student_by_rank(dept:str,rank:int):
+    if dept.lower()=="all":
+        result=sorted(students,key=lambda x:x["cgpa"],reverse=True)[rank-1]
+        return result
+    results=[
+        student for student in students if student["department"].lower()==dept.lower()
+        ]
+    results=sorted(results,key=lambda x:x["cgpa"],reverse=True)
+    if results:
+        return results[rank-1]
+    else:
+        return {"message":f"unknown deptartment {dept} or rank out of bound {rank}"}
+
+
