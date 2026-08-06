@@ -55,7 +55,7 @@ def productById(id:int):
             return product
     return {"message":f"product not found with id {id}"}
 
-@app.get("/products/search/{key}")
+# @app.get("/products/search/{key}")
 def search_product(key:str):
     results=[product for product in products if key.lower() in product["name"].lower()]
     if results:
@@ -106,3 +106,18 @@ def filter1(category:str,brand:str):
         return results
     else:
         return {"message":f"No products found in category '{category}' with brand '{brand}'"}
+
+
+# Single point with optional query parameters:
+@app.get("/products/search")
+def search_products(category:str|None=None,brand:str|None=None,max_price:int|None=None,min_price:int=None):
+    results=products
+    if category is not None:
+        results=[product for product in results if product["category"].lower()==category.lower()]
+    if brand is not None:
+        results=[product for product in results if product["brand"].lower()==brand.lower()]
+    if max_price is not None:
+        results=[product for product in results if product["price"]<max_price]
+    if min_price is not None:
+        results=[product for product in results if product["price"]>min_price]
+    return results
