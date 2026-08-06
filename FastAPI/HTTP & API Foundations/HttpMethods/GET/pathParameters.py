@@ -46,7 +46,7 @@ def get_emp_by_dept_age(dept:str,age:int):
 
 # Query Parameters
 
-@app.get("/employees")
+@app.get("/employees/")
 def get_emp_with_more_salary(salary:float):
     results=[]
     for emp_id,emp in employees.items():
@@ -57,7 +57,7 @@ def get_emp_with_more_salary(salary:float):
     return {"error":f"No employees found found with salary more than {salary}$"}
 
 # Optional Query Parameters
-@app.get("/employees")
+@app.get("/employees/")
 def empByID(emp_id:str|None=None):
     if emp_id is None:
         return employees
