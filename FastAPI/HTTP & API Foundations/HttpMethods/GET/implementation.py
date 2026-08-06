@@ -54,3 +54,27 @@ def productById(id:int):
         if product["id"]==id:
             return product
     return {"message":f"product not found with id {id}"}
+
+@app.get("/products/search/{key}")
+def search_product(key:str):
+    results=[product for product in products if key.lower() in product["name"].lower()]
+    if results:
+        return results
+    else:
+        return {"message":f"product having key '{key}' not found!"}
+
+@app.get("/products/filter/by_category/{category}")
+def category_filter(category:str):
+    results=[product for product in products if category.lower()==product["category"].lower()]
+    if results:
+        return results
+    else:
+        return {"message":f"no product found in category '{category}'"}
+
+@app.get("/products/filter/by_brand/{brand}")
+def brand_filter(brand:str):
+    results=[product for product in products if product["brand"].lower()==brand.lower()]
+    if results:
+        return results
+    else:
+        return {"message":f"no product found for brand '{brand}'"}
