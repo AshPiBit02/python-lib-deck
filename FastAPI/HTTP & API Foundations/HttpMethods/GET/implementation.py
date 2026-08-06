@@ -78,3 +78,31 @@ def brand_filter(brand:str):
         return results
     else:
         return {"message":f"no product found for brand '{brand}'"}
+
+@app.get("/products/page/{page}/limit/{limit}")
+def pagination(page:int,limit:int):
+    start=(page-1)*limit
+    end=start+limit
+    return products[start:end]
+
+@app.get("/products/sort/{order}")
+def sort_product(order:str):
+    if order.lower()=="desc":
+        sorted_product=sorted(products,key=lambda x:x["price"],reverse=True)
+        return sorted_product
+    elif order.lower()=="asc":
+        sorted_product=sorted(products,key=lambda x:x["price"])
+        return sorted_product
+    else:
+        return {"message":f"invalid sorting order '{order}'"}
+
+@app.get("/products/filter/category/{category}/brand/{brand}")
+def filter1(category:str,brand:str):
+    category_exists=any(product["category"].lower()==category.lower() for product in products)
+    if not category_exists:
+        return {"message":f"Category '{category}' not found!"}
+    results=[product for product in products if product["category"].lower()==category.lower() and product["brand"].lower()==brand.lower()]
+    if results:
+        return results
+    else:
+        return {"message":f"No products found in category '{category}' with brand '{brand}'"}
