@@ -79,3 +79,13 @@ def paginate(page:int,limit:int):
     start=(page-1)*limit
     end=start+limit
     return students[start:end]
+
+# Sorting
+@app.get("/students/sort/{order}")
+def sort_students(order:str):
+    if order=="asc":
+        return sorted(students,key=lambda x:x["cgpa"])
+    elif order=="desc":
+        return sorted(students,key=lambda x:x["cgpa"],reverse=True)
+    else:
+        return {"message":f"unknown order {order}"}
