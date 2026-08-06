@@ -65,10 +65,17 @@ def filter_students(department:str):
         return {"message":f"no student found in department {department}"}
 
 # Search
-@app.get("/student/search/by_name/{token}")
+@app.get("/students/search/by_name/{token}")
 def search_student(token:str):
     result=[student for student in students if token.lower() in student["name"].lower()]
     if result:
         return result
     else: 
         return {"message":f"no student found with {token}"}
+
+# Pagination
+@app.get("/students/page/{page}/limit/{limit}")
+def paginate(page:int,limit:int):
+    start=(page-1)*limit
+    end=start+limit
+    return students[start:end]
