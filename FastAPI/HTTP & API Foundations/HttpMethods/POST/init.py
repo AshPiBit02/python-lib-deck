@@ -89,7 +89,29 @@ def add_student_address(student:Student):
     students_addresses.append(student.model_dump())
     return f"{student.name} added!"
 
+# Dummy Stuff 1
+products=[]
+class Product(BaseModel):
+    name:str
+    category:str
+    brand:str
+    price:float
+    stock:int
 
+@app.post("/products")
+def create_product(product:Product):
+    new_product={
+        "id":len(products)+300,
+        **product.model_dump()
+    }
+    products.append(new_product)
+    return {
+        "message":f"{product.name}({new_product["id"]}) added to inventory!"
+    }
+
+@app.get("/products")
+def view_inventory():
+    return products
 
 
 
