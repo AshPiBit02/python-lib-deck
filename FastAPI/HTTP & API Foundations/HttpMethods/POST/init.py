@@ -63,7 +63,34 @@ def add_employee(employee:Employee):
 
 @app.get("/employee/list")
 def employees_list():
-    return employees;
+    return employees
+
+# Pattern 3: Validation/Wrong Type
+class Person(BaseModel):
+    name:str
+    age:int
+
+Persons=[]
+@app.post("/person")
+def add_persion(person:Person):
+    Persons.append(person.model_dump())
+    return person 
+
+# Pattern 4: Nested Models
+class Address(BaseModel):
+    city:str
+    country:str
+class Student(BaseModel):
+    name:str
+    address:Address
+students_addresses=[]
+@app.post("/student_address")
+def add_student_address(student:Student):
+    students_addresses.append(student.model_dump())
+    return f"{student.name} added!"
+
+
+
 
 
 
