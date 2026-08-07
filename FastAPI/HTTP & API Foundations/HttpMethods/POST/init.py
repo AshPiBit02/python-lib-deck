@@ -114,5 +114,27 @@ def view_inventory():
     return products
 
 
+# Dummy Stuff 2
+class Book(BaseModel):
+    title:str
+    author:str
+    genre:str
+    price:float
+    pages:int
+books=[]
+@app.post("/books/add_books")
+def add_books_to_inventory(book:Book):
+    new_book={
+        "id":len(books)+301,
+        **book.model_dump()
+    }
+    books.append(new_book)
+    return {"message":f"{book.title}({new_book["id"]}) added to inventory!"}
+@app.get("/books/list")
+def view_book_inventory():
+    return books
+    
+
+
 
 
