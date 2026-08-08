@@ -32,7 +32,7 @@ def update_product(id:int,product:Product):
             new_product={
                 "id":id,
                 **product.model_dump(),
-                "total_value":item["price"]*item["quantity"]
+                "total_value":product.price*product.quantity
             }
             products[idx]=new_product
             return new_product
