@@ -23,16 +23,16 @@ def update_product(product_id:int,product:Product):
         if existing_product["id"]==product_id:
             if product.name is not None:
                 existing_product["name"]=product.name
-                return product
+                return {"message":f"Updated product name ({existing_product["name"]} -> {product.name})"}
             if product.categroy is not None:
                 existing_product["category"]=product.categroy
-                return product
+                return {"message":f"Updated product category ({existing_product["category"]} -> {product.categroy})"}
             if product.price is not None:
                 existing_product["price"]=product.price
-                return product
+                return {"message":f"Updated product price ({existing_product["price"]} -> {product.price})"}
             if product.quantity is not None:
                 existing_product["quantity"]=product.quantity
-                return product
+                return {"message":f"Updated product quantity ({existing_product["quantity"]} -> {product.quantity})"}
     raise HTTPException(status_code=404,detail=f"Product with id {product_id} not found!")
             
 @app.get("/products")
