@@ -16,15 +16,15 @@ class Product(BaseModel):
     price:float|None=None
     quantity:int|None=None
 
-message=[]
 @app.patch("/products/{product_id}")
 def update_product(product_id:int,product:Product):
+    message=[]
     for existing_product in products:
         if existing_product["id"]==product_id:
             if product.name is not None:
                 existing_product["name"]=product.name
                 message.append({"Updated name":f"{existing_product['name']} -> {product.name}"})
-            if product.categroy is not None:
+            if product.category is not None:
                 existing_product["category"]=product.category
                 message.append({"Updated category":f"{existing_product['category']} -> {product.category}"})
             if product.price is not None:
