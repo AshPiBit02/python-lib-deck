@@ -39,3 +39,7 @@ def update_product(product_id:int,product:ProductUpdate):
             existing_product.update(update_data)
             return existing_product
     raise HTTPException(status_code=404,detail=f"Product with id {product_id} not found!")
+
+@app.get("/products")
+def inventory():
+    return products
