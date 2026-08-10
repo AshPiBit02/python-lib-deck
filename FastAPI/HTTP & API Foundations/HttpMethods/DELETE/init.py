@@ -1,4 +1,4 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI,HTTPException,status
 app=FastAPI()
 products = [
     {
@@ -23,12 +23,12 @@ products = [
         "quantity": 15
     }
 ]
-@app.delete("/products/{product_id}")
+@app.delete("/products/{product_id}",status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id:int):
     for product in products:
         if product["id"]==product_id:
             products.remove(product)
-            return {"massage":f"Product with id {product_id} removed successfully!"}
+            return 
     raise HTTPException(status_code=404,detail=f"Product with product id {product_id} not found!")
 
 @app.get("/products")
