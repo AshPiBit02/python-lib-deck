@@ -51,4 +51,18 @@ def add_newBook(book:Book):
         "message":f"Book {book.title} added to library!"
     }
 
+@app.put("/books/{book_id}")
+def replace_book(book_id:int,book:Book):
+    for index,available_book in enumerate(books):
+        if available_book["id"]==book_id:
+            new_book={
+                "id":available_book["id"],
+                **book.model_dump()
+            }
+            books[index]=new_book
+            return {
+                "message":f"{available_book["title"]} replaced by {book.title} successfully!"
+            }
+    raise HTTPException(status_code=404,detail=f"Book with id {book_id} not found!")
+
 
