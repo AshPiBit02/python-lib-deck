@@ -100,3 +100,15 @@ def borrow_book(book_id:int,borrower:str):
                 return {"message":f"Book with id {book_id} borrowed by {borrower} successfully!"}
             return {"message":"No copies available!"}
     raise HTTPException(status_code=404,detail=f"Book with id {book_id} doesn't exists!")
+
+@app.post("/books/{book_id}/returner",status_code=200)
+def return_book(book_id:int,returner:str):
+    for existing_book in books:
+        if existing_book in books:
+            if existing_book["id"]==book_id:
+                if returner.lower() in existing_book["borrowed_by"].lower():
+                    existing_book["borrowed_by"].lower().remove(returner.lower())
+                    existing_book["copies_available"]+=1
+                    return {"message":f"Book with id {book_id} is return by {returner}"}
+            return {"message":f"Return failed unknown returner!"}
+    raise HTTPException(status_code=404,detail=f"Book with id {book_id} doesn't exists!")
