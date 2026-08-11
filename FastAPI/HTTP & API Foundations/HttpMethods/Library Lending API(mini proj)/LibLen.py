@@ -1,6 +1,5 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
-from typing import Optional
 
 app=FastAPI()
 
@@ -14,7 +13,7 @@ class Book(BaseModel):
     title:str
     author:str
     copies_available:int
-    borrowed_by:str|None
+    borrowed_by:list[str]=[]
 
 class UpdateBook(BaseModel):
     title:str|None=None
@@ -25,13 +24,6 @@ class UpdateBook(BaseModel):
 @app.get("/books",status_code=200)
 def book_list():
     return books
-
-@app.get("/books/{book_id}",status_code=200)
-def book_by_id(book_id:int):
-    for book in books:
-        if book["id"]==book_id:
-            return book
-    raise HTTPException(status_code=404,detail=f"Book with id {book_id} not found!")
 
 @app.get("/books/find/{author}",status_code=200)
 def book_by_author(author:str):
@@ -48,6 +40,13 @@ def available_books(available:bool):
     else:
         result=[book for book in books if book["copies_available"]<1]
         return result
+    
+@app.get("/books/{book_id}",status_code=200)
+def book_by_id(book_id:int):
+    for book in books:
+        if book["id"]==book_id:
+            return book
+    raise HTTPException(status_code=404,detail=f"Book with id {book_id} not found!")
 
 @app.post("/books/new_boook",status_code=201)
 def add_newBook(book:Book):
@@ -82,7 +81,7 @@ def update_book(book_id:int,book:UpdateBook):
     raise HTTPException(status_code=404,detail=f"Book with book id {book_id} not found!")
 
 
-@app.delete("/books/{bood_id}",status_code=200)
+@app.delete("/books/{book_id}",status_code=200)
 def remove_book(book_id:int):
     for book in books:
         if book["id"]==book_id:
