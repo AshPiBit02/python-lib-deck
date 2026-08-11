@@ -90,5 +90,13 @@ def remove_book(book_id:int):
             return {"message":f"Book with id {book_id} removed from library!"}
     raise HTTPException(status_code=404,detail=f"Book with id {book_id} doesn't exists!")
 
-
-
+@app.post("/books/{book_id}/borrow/{borrower}",status_code=200)
+def borrow_book(book_id:int,borrower:str):
+    for existing_book in books:
+        if existing_book["id"]==book_id:
+            if existing_book["copies_available"]>0:
+                existing_book["borrowed_by"]=borrower
+                existing_book["copies_available"]-=1
+                return {"message":f"Book with id {book_id} borrowed by {borrower} successfully!"}
+            return {"message":"No copies available!"}
+    raise HTTPException(status_code=404,detail=f"Book with id {book_id} doesn't exists!")
