@@ -5,9 +5,9 @@ from typing import Optional
 app=FastAPI()
 
 books = [
-    {"id": 1, "title": "Clean Code", "author": "Robert Martin", "copies_available": 2, "borrowed_by": None},
-    {"id": 2, "title": "The Pragmatic Programmer", "author": "Andrew Hunt", "copies_available": 1, "borrowed_by": None},
-    {"id": 3, "title": "Design Patterns", "author": "GoF", "copies_available": 0, "borrowed_by": "Alice"},
+    {"id": 1, "title": "Clean Code", "author": "Robert Martin", "copies_available": 2, "borrowed_by": []},
+    {"id": 2, "title": "The Pragmatic Programmer", "author": "Andrew Hunt", "copies_available": 3, "borrowed_by": []},
+    {"id": 3, "title": "Design Patterns", "author": "GoF", "copies_available": 0, "borrowed_by": ["Alice"]},
 ]
 
 class Book(BaseModel):
@@ -95,7 +95,7 @@ def borrow_book(book_id:int,borrower:str):
     for existing_book in books:
         if existing_book["id"]==book_id:
             if existing_book["copies_available"]>0:
-                existing_book["borrowed_by"]=borrower
+                existing_book["borrowed_by"].append(borrower)
                 existing_book["copies_available"]-=1
                 return {"message":f"Book with id {book_id} borrowed by {borrower} successfully!"}
             return {"message":"No copies available!"}
