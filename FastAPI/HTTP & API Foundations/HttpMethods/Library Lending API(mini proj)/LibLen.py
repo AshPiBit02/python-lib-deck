@@ -1,5 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
+from typing import Optional
 
 app=FastAPI()
 
@@ -27,3 +28,9 @@ def book_by_id(book_id:int):
             return book
     raise HTTPException(status_code=404,detail=f"Book with id {book_id} not found!")
 
+@app.get("/books/find/{author}",status_code=200)
+def book_by_author(author:str):
+    result=[book for book in books if author.lower() in book["author"].lower()]
+    if result:
+        return result
+    return {"message":f"No book found found for author {author}"}
