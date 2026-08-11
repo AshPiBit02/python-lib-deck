@@ -34,3 +34,14 @@ def book_by_author(author:str):
     if result:
         return result
     return {"message":f"No book found found for author {author}"}
+
+@app.get("/books/available/{available}")
+def available_books(available:bool):
+    if available:
+        result=[book for book in books if book["copies_available"]>0]
+        return result
+    else:
+        result=[book for book in books if book["copies_available"]<1]
+        return result
+
+
