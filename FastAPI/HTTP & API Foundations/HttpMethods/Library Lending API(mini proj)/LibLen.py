@@ -82,6 +82,13 @@ def update_book(book_id:int,book:UpdateBook):
     raise HTTPException(status_code=404,detail=f"Book with book id {book_id} not found!")
 
 
+@app.delete("/books/{bood_id}",status_code=200)
+def remove_book(book_id:int):
+    for book in books:
+        if book["id"]==book_id:
+            books.remove(book)
+            return {"message":f"Book with id {book_id} removed from library!"}
+    raise HTTPException(status_code=404,detail=f"Book with id {book_id} doesn't exists!")
 
 
 
