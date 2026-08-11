@@ -10,8 +10,7 @@ books = [
     {"id": 3, "title": "Design Patterns", "author": "GoF", "copies_available": 0, "borrowed_by": "Alice"},
 ]
 
-class Booke(BaseModel):
-    id:int
+class Book(BaseModel):
     title:str
     author:str
     copies_available:int
@@ -35,7 +34,7 @@ def book_by_author(author:str):
         return result
     return {"message":f"No book found found for author {author}"}
 
-@app.get("/books/available/{available}")
+@app.get("/books/available/{available}",status_code=200)
 def available_books(available:bool):
     if available:
         result=[book for book in books if book["copies_available"]>0]
@@ -43,5 +42,13 @@ def available_books(available:bool):
     else:
         result=[book for book in books if book["copies_available"]<1]
         return result
+
+@app.post("/books/new_boook",status_code=201)
+def add_newBook(book:Book):
+    new_book={"id":len(books)+1,**book.model_dump()}
+    books.append(new_book)
+    return {
+        "message":f"Book {book.title} added to library!"
+    }
 
 
