@@ -16,6 +16,12 @@ class Book(BaseModel):
     copies_available:int
     borrowed_by:str|None
 
+class UpdateBook(BaseModel):
+    title:str|None=None
+    author:str|None=None
+    copies_available:int|None=None
+    borrowed_by:str|None=None
+
 @app.get("/books",status_code=200)
 def book_list():
     return books
@@ -51,7 +57,7 @@ def add_newBook(book:Book):
         "message":f"Book {book.title} added to library!"
     }
 
-@app.put("/books/{book_id}")
+@app.put("/books/{book_id}",status_code=200)
 def replace_book(book_id:int,book:Book):
     for index,available_book in enumerate(books):
         if available_book["id"]==book_id:
@@ -64,5 +70,18 @@ def replace_book(book_id:int,book:Book):
                 "message":f"{available_book["title"]} replaced by {book.title} successfully!"
             }
     raise HTTPException(status_code=404,detail=f"Book with id {book_id} not found!")
+
+
+@app.patch("/books/{book_id}",status_code=200)
+def update_book(book_id:int,book:UpdateBook):
+    for existing_book in books:
+        if existing_book["id"]==book_id:
+            updated_book=book.model_dump(exclude_unset=True)
+            existing_book.update(updated_book)
+            return {"message":f"Book with book id {book_id} updated successfully!"}
+    raise HTTPException(status_code=404,detail=f"Book with book id {book_id} not found!")
+
+
+
 
 
