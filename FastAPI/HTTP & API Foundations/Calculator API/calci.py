@@ -1,48 +1,44 @@
-from fastapi import FastAPI,HTTPException
-app=FastAPI()
+from fastapi import FastAPI, HTTPException
 
-history=[]
+app = FastAPI()
+
+history = []
 
 @app.get("/add")
-def add(x:int,y:int)->dict:
-    log={
-        "operation":f"{x} + {y} = {x+y}"
-    }
+def add(x: int, y: int) -> dict:
+    result = x + y
+    log = {"operation": f"{x} + {y} = {result}"}
     history.append(log)
-    return {"result":x+y}
+    return {"result": result}
 
 @app.get("/subtract")
-def sub(x:int,y:int)->dict:
-    log={
-        "operation":f"{x} - {y} = {x-y}"
-    }
+def subtract(x: int, y: int) -> dict:
+    result = x - y
+    log = {"operation": f"{x} - {y} = {result}"}
     history.append(log)
-    return {"result":x-y}
+    return {"result": result}
 
-@app.get("/multiply/{x}/{y}")
-def mul(x:int,y:int)->dict:
-    log={
-        "operation":f"{x} * {y} = {x*y}"
-    }
+@app.get("/multiply")
+def multiply(x: int, y: int) -> dict:
+    result = x * y
+    log = {"operation": f"{x} * {y} = {result}"}
     history.append(log)
-    return {"result":x*y}
+    return {"result": result}
 
-@app.get("/divide/{x}/{y}")
-def mul(x:int,y:int)->dict:
-    if y==0:
-        raise HTTPException(status_code=400,detail=f"Cannot divide by zero!")
-    log={
-        "operation":f"{x} / {y} = {x/y}"
-    }
+@app.get("/divide")
+def divide(x: int, y: int) -> dict:
+    if y == 0:
+        raise HTTPException(status_code=400, detail="Cannot divide by zero!")
+    result = x / y
+    log = {"operation": f"{x} / {y} = {result}"}
     history.append(log)
-    return {"result":x/y}
+    return {"result": result}
 
 @app.get("/history")
-def history()->list:
+def get_history() -> list:
     return history
 
-
 @app.delete("/history")
-def clear_history()->dict:
+def clear_history() -> dict:
     history.clear()
-    return {"message":"History cleared"}
+    return {"message": "History cleared"}
