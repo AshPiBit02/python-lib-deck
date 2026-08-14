@@ -6,6 +6,12 @@ class Address(BaseModel):
     city:str
     country:str
 
+hotels:list[dict]=[]
+rooms:list[dict]=[]
+bookings:list[dict]=[]
+
+def next_id(items:list[dict])->int:
+    return max((item["id"] for item in items),default=0)+1
 class Hotel(BaseModel):
     id:int|None=None
     name:str=Field(...,min_length=4,max_length=100)
