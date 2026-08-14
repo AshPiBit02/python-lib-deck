@@ -25,7 +25,7 @@ class Hotel(BaseModel):
 class RoomBase(BaseModel):
     room_number:str
     room_type:str
-    price_per_night:float=Field(ge=1200,le=50000,multiple_of=0.5)
+    price_per_night:float=Field(ge=1200,le=100000,multiple_of=0.5)
     max_occupancy:int=Field(gt=1,le=10)
 
 class RoomIn(RoomBase):
@@ -87,6 +87,12 @@ class BookingOut(BookingBase):
     total_price:float
     status:Literal["confirmed","cancelled"]
 
+@app.post("/hotels",response_model=Hotel,status_code=201)
+def create_hotel(hotel:Hotel):
+    new_id=next_id(hotels)
+    stored={**hotel.model_dump(),"id":new_id}
+    hotels.append(stored)
+    return stored
 
 
 @app.post("/hotels/{hotel_id}/rooms",response_model=RoomOut,status_code=201)
