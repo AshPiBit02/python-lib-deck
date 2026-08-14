@@ -1,6 +1,9 @@
 from pydantic import BaseModel,Field,EmailStr,model_validator,ConfigDict,field_validator
 from typing import Literal
 from datetime import date
+from fastapi import FastAPI,HTTPException
+
+app=FastAPI()
 class Address(BaseModel):
     street:str
     city:str
@@ -84,4 +87,26 @@ class BookingOut(BookingBase):
     total_price:float
     status:Literal["confirmed","cancelled"]
 
+
+
+@app.post("/hotels/{hotel_id}/rooms",response_model=RoomOut,status_code=201)
+def add_room(hotel_id:int,room:RoomIn):
+    if not any(h["id"]==hotel_id for h in hotels):
+        raise HTTPException(status_code=404,detail=f"Hotel {hotel_id} not found!")
+
+    new_id=next_id(rooms)
+    stored={
+        **room.model_dump(),
+        "id":new_id,
+        "hotel_id":hotel_id,
+        "is_available":True
+    }
+    rooms.append(stored)
+    return stored
+
+@app.get("/hotels/{hotel_id}/rooms",response_model=list[RoomOut])
+def list_rooms(hotel_id:int):
+    if not any(h["id"]==hotel_id for h in hotels):
+        raise HTTPException(status_code=404,detail=f"Hotel {hotel_id} not found!")
+    return [r for r in rooms if r["hotel_id"]==hotel_id]
 
