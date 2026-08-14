@@ -7,6 +7,7 @@ class Address(BaseModel):
     country:str
 
 class Hotel(BaseModel):
+    id:int|None=None
     name:str=Field(...,min_length=4,max_length=100)
     address:Address
     star_rating:int=Field(ge=1,le=5)
@@ -38,12 +39,13 @@ class PayPalPayment(BaseModel):
     paypal_email:EmailStr
 
 
-class BookingIn(BaseModel):
+class BookingBase(BaseModel):
     guest_name:str
     guest_email:EmailStr
     room_id:int
-    check_in:date
+    check_int:date
     check_out:date
+class BookingIn(BookingBase):
     payment:CardPayment|CashPayment|PayPalPayment=Field(...,discriminator="method")
 
     @field_validator("guest_name")
@@ -54,7 +56,7 @@ class BookingIn(BaseModel):
         return name
     @model_validator(mode="after")
     def check_date(self)->"BookingIn":
-        if self.check_in>self.check_out:
+        if self.check_in>=self.check_out:
             raise ValueError("Invalid checking dates!")
         return self
 
@@ -63,4 +65,17 @@ class BookingIn(BaseModel):
         extra="forbid"
     )
 
-class BookingOut(BaseModel):
+class UpdateBooking(BaseModel):
+    guest_name:str|None=None
+    guest_email:EmailStr|None=None
+    check_int:date|None=None
+    check_out:date|None=None
+    status:Literal["confirmed","cancelled"]|None=None
+    model_config=ConfigDict(extra="forbid")
+class BookingOut(BookingBase):
+    id:int
+    payment_method:Literal["card","cash","paypal"]
+    total_price:float
+    status:Literal["confirmed","cancelled"]
+
+
