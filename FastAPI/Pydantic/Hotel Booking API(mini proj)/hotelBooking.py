@@ -77,7 +77,7 @@ class BookingIn(BookingBase):
 class UpdateBooking(BaseModel):
     guest_name:str|None=None
     guest_email:EmailStr|None=None
-    check_int:date|None=None
+    check_in:date|None=None
     check_out:date|None=None
     status:Literal["confirmed","cancelled"]|None=None
     model_config=ConfigDict(extra="forbid")
@@ -122,7 +122,7 @@ def create_booking(booking:BookingIn):
     if room is None:
         raise HTTPException(status_code=404,detail=f"Room {booking.room_id} not found!")
 
-    if not room("is_available"):
+    if not room["is_available"]:
         raise HTTPException(status_code=400,detail=f"Room {booking.room_id} not available!")
     nights=(booking.check_out-booking.check_in).days
     total_price=nights*room["price_per_night"]
