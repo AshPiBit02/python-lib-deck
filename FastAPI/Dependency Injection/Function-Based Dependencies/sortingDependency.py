@@ -17,11 +17,5 @@ def movies_list():
 
 @app.get("/movies/sort_by")
 def sort_movies(field:str=Depends(get_sort_order)):
-    result=movies
-    if field.lower()=="title":
-        result=sorted(result,key=lambda m:m["title"])
-    if field.lower()=="rating":
-        result=sorted(result,key=lambda m:m["rating"])
-    if field.lower()=="year":
-        result=sorted(result,key=lambda m:m["year"])
+    result=sorted(movies,key=lambda m:m[field])
     return result
