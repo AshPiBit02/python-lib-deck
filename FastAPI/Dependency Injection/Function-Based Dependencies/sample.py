@@ -12,7 +12,7 @@ products = [
 def get_pagination(skip:int=0,limit:int=10)->dict:
     return {"skip":skip,"limit":limit}
 
-def get_search_filteres(category:str|None=None,min_price:float|None=None)->dict:
+def get_search_filters(category:str|None=None,min_price:float|None=None)->dict:
     filters:dict={}
     if category:
         filters["category"]=category
@@ -32,7 +32,7 @@ def list_products(pagination:dict=Depends(get_pagination)):
 @app.get("/products/search")
 def search_products(
     pagination:dict=Depends(get_pagination),
-    filters:dict=Depends(get_search_filteres)
+    filters:dict=Depends(get_search_filters)
 ):
     result=products
 
