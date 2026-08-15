@@ -58,4 +58,12 @@ def add_item(category:str=Depends(validate_category),item:Item=None):
     menu_items.append(new_item)
     return new_item
 
+@app.get("/menu/search")
+def search_menu(items:list[dict]=Depends(filter_menu),pagination:dict=Depends(get_pagination)):
+    skip=pagination["skip"]
+    limit=pagination["limit"]
+    return {
+        "pagination":pagination,
+        "result":items[skip:skip+limit]
+    }
 
