@@ -14,7 +14,7 @@ ALLOWED_CATEGORIES={"starter","main","dessert","drink"}
 def get_pagination(skip:int=0,limit:int=10)->dict:
     return {"skip":skip,"limit":limit}
 
-def get_price_filter(min_price:float|None=None,max_price:float|None=None,category:str|None=None)->dict:
+def get_filters(min_price:float|None=None,max_price:float|None=None,category:str|None=None)->dict:
     filters:dict={}
     if min_price is not None:
         filters["min_price"]=min_price
@@ -30,7 +30,23 @@ def validate_category(category:str)->str:
         raise HTTPException(status_code=400,detail=f"{category} doesn't exists!")
     return category
 
-class Product(BaseModel):
+class Item(BaseModel):
     name:str=Field(...,min_length=4,max_length=20)
     price:float=Field(...,gt=0)
-    category:str=Field(...,min_length=4,max_length=20)
+
+@app.get("/menu")
+def get_menu(pagination:dict=Depends(get_pagination)):
+    skip=pagination["skip"]
+    limit=pagination["limit"]
+    return menu_items[skip:skip+limit]
+
+@app.post("/menu/filter")
+def add_item(filters:str=Depends(get_filters)):
+    result=menu_items
+    if "min_price" in filters:
+        result=[item for item in result if item["price"]>=filters["min_price"]]
+    if "max_price" in filters:
+        result=[item for item in result if item["price"]<=filters["max_price"]]
+    if "category" in filters:
+        result=[item for item in result if item["category"]==filters["category"]]
+    return result
