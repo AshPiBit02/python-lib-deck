@@ -40,8 +40,8 @@ def get_menu(pagination:dict=Depends(get_pagination)):
     limit=pagination["limit"]
     return menu_items[skip:skip+limit]
 
-@app.post("/menu/filter")
-def add_item(filters:str=Depends(get_filters)):
+@app.get("/menu/filter")
+def filter_menu(filters:str=Depends(get_filters)):
     result=menu_items
     if "min_price" in filters:
         result=[item for item in result if item["price"]>=filters["min_price"]]
@@ -50,3 +50,12 @@ def add_item(filters:str=Depends(get_filters)):
     if "category" in filters:
         result=[item for item in result if item["category"]==filters["category"]]
     return result
+
+@app.post("/menu/{category}/items")
+def add_item(category:str=Depends(validate_category),item:Item=None):
+    new_id=max(i["id"] for i in menu_items)+1
+    new_item={"id":new_id,"name":item.name,"price":item.price,"category":category}
+    menu_items.append(new_item)
+    return new_item
+
+
