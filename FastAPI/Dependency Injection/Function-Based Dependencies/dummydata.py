@@ -52,3 +52,11 @@ movies: list[dict] = [
     {"title": "One Flew Over the Cuckoo's Nest", "rating": 8.6, "year": 1975},
     {"title": "Se7en", "rating": 8.6, "year": 1995},
 ]
+
+flights = [
+    {"price": 250.0, "duration": 150},   # 2h 30m
+    {"price": 420.5, "duration": 310},   # 5h 10m
+    {"price": 180.0, "duration": 105},   # 1h 45m
+    {"price": 600.0, "duration": 500},   # 8h 20m
+    {"price": 320.0, "duration": 230}    # 3h 50m
+]
