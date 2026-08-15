@@ -41,7 +41,7 @@ def get_menu(pagination:dict=Depends(get_pagination)):
     return menu_items[skip:skip+limit]
 
 @app.get("/menu/filter")
-def filter_menu(filters:str=Depends(get_filters)):
+def filter_menu(filters:dict=Depends(get_filters))->dict:
     result=menu_items
     if "min_price" in filters:
         result=[item for item in result if item["price"]>=filters["min_price"]]
@@ -49,21 +49,25 @@ def filter_menu(filters:str=Depends(get_filters)):
         result=[item for item in result if item["price"]<=filters["max_price"]]
     if "category" in filters:
         result=[item for item in result if item["category"]==filters["category"]]
-    return result
+    return {
+        "filters":filters,
+        "result":result
+    }
 
 @app.post("/menu/{category}/items")
-def add_item(category:str=Depends(validate_category),item:Item=None):
+def add_item(item:Item,category:str=Depends(validate_category)):
     new_id=max(i["id"] for i in menu_items)+1
     new_item={"id":new_id,"name":item.name,"price":item.price,"category":category}
     menu_items.append(new_item)
     return new_item
 
 @app.get("/menu/search")
-def search_menu(items:list[dict]=Depends(filter_menu),pagination:dict=Depends(get_pagination)):
+def search_menu(items:dict=Depends(filter_menu),pagination:dict=Depends(get_pagination)):
     skip=pagination["skip"]
     limit=pagination["limit"]
     return {
         "pagination":pagination,
-        "result":items[skip:skip+limit]
+        "filters":items["filters"],
+        "result":items["result"][skip:skip+limit]
     }
 
