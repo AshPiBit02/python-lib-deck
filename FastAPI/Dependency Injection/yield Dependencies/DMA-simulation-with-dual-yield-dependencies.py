@@ -1,26 +1,29 @@
 from fastapi import FastAPI,Depends
+import asyncio
 
 app=FastAPI()
 
 def get_setup():
-    print("CPU: Allocate memory buffer and configures the DMAC")
+    print("CPU: Initializes DMA controller and prepares memory buffer")
     configs={"source":"memory","destination":"I/O device","block_size":"12 bytes"}
     try:
         yield configs
     finally:
-        print("DMAC: Asks for Bus System")
+        print("DMAC: Requests control of the system bus")
 
-def get_bus_access():
-    print("CPU: Grants System Bus access to DMAC")
+async def get_bus_access():
+    print("CPU: Grants system Bus access to DMAC")
     transmission={"task":"transmitting"}
     try:
+        print("DMAC: Transmitting the blocks.......")
+        await asyncio.sleep(2)
         yield transmission
-        print("Transmission completed")
+        print("DMAC: Data transfer completed")
     finally:
-        print("DMAC: Releases the System bus")
+        print("DMAC: Releases the system bus back to CPU")
 
 @app.get("/file_transfer")
 def transfer_file(setup:dict=Depends(get_setup),bus:dict=Depends(get_bus_access)):
-    print("DMA simulation")
+    print("Route: Simulating DMA file transfer")
     return {"setup":setup,"bus":bus}
 
