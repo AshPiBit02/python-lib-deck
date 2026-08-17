@@ -2,6 +2,8 @@ from typing import Annotated
 from fastapi import FastAPI,Depends
 import asyncio
 
+app=FastAPI()
+
 async def turn_on_device():
     print("Turning on device...")
     device={"status":"ON"}
@@ -32,9 +34,7 @@ async def text_app(internet_connection:Annotated[dict,Depends(connect_to_interne
         text["status"]="sent"
         print("Message sent sucessfully")
 
-
-
-    
-
-
-    
+@app.get("/send_message")
+async def send_message(text:Annotated[dict,Depends(text_app)]):
+    print("Route: Using text app to send message")
+    return {"result":text}
