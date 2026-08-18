@@ -36,3 +36,7 @@ def report_advanced(premium_client:premium_client_dependency):
 @app.get("/reports/enterprise")
 def report_enterprise(verified_client:verified_premium_client_dependency):
     return {"name":verified_client["name"],"tier":verified_client["tier"],"services":"enterprise"}
+
+@app.get("/account/info")
+def account_info(client:api_client_dependency):
+    return client
