@@ -7,8 +7,8 @@ fake_users_db={
     "token-rob":{"username":"rob","role":"admin"},
 }
 
-def get_current_user(authorization:str=Header(...))->dict:
-    user=fake_users_db.get(authorization)
+def get_current_user(x_auth_token:str=Header(...))->dict:
+    user=fake_users_db.get(x_auth_token)
     if user is None:
         raise HTTPException(status_code=401,detail="Invalid token")
     return user
