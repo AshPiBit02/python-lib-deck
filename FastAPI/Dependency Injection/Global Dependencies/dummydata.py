@@ -184,3 +184,83 @@ shipments = [
         "status": "delivered"
     }
 ]
+inventory = [
+    {
+        "item_id": "INV-001",
+        "name": "Laptop",
+        "category": "Electronics",
+        "stock": 25,
+        "price": 1200.00,
+        "supplier_secret": "SUP-ALPHA-KEY",
+        "internal_notes": "Priority restock needed"
+    },
+    {
+        "item_id": "INV-002",
+        "name": "Office Chair",
+        "category": "Furniture",
+        "stock": 40,
+        "price": 150.00,
+        "supplier_secret": "SUP-BETA-KEY",
+        "internal_notes": "Bulk order discount applied"
+    },
+    {
+        "item_id": "INV-003",
+        "name": "Smartphone",
+        "category": "Electronics",
+        "stock": 60,
+        "price": 850.00,
+        "supplier_secret": "SUP-GAMMA-KEY",
+        "internal_notes": "High demand item"
+    },
+    {
+        "item_id": "INV-004",
+        "name": "Printer",
+        "category": "Office Supplies",
+        "stock": 15,
+        "price": 220.00,
+        "supplier_secret": "SUP-DELTA-KEY",
+        "internal_notes": "Limited warranty batch"
+    },
+    {
+        "item_id": "INV-005",
+        "name": "Tablet",
+        "category": "Electronics",
+        "stock": 30,
+        "price": 300.00,
+        "supplier_secret": "SUP-EPSILON-KEY",
+        "internal_notes": "Next shipment delayed"
+    }
+]
+
+announcements = [
+    {
+        "id": "ANN-001",
+        "title": "Holiday Sale",
+        "message": "Enjoy up to 30% off on electronics this week!",
+        "date": "2026-08-19"
+    },
+    {
+        "id": "ANN-002",
+        "title": "New Arrivals",
+        "message": "Fresh stock of office chairs and desks now available.",
+        "date": "2026-08-18"
+    },
+    {
+        "id": "ANN-003",
+        "title": "System Maintenance",
+        "message": "Scheduled downtime on August 21 from 2 AM to 4 AM.",
+        "date": "2026-08-17"
+    },
+    {
+        "id": "ANN-004",
+        "title": "Premium Membership",
+        "message": "Sign up for premium to unlock exclusive discounts.",
+        "date": "2026-08-16"
+    },
+    {
+        "id": "ANN-005",
+        "title": "Free Shipping",
+        "message": "Free shipping on all orders above $500 until August 25.",
+        "date": "2026-08-15"
+    }
+]
