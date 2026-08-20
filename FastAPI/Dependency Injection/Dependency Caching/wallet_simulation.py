@@ -21,6 +21,12 @@ def get_user()->str:
         raise HTTPException(status_code=403,detail="Login to wallet first!")
     return user
 
+def verify_receiver(reciever:str=Header(...))->str:
+    if reciever not in USER_PRIVATE_CREDENITIALS:
+        return HTTPException(status_code=404,detail="Unknown receiver!")
+    return reciever
+
+receiver_dependency=Annotated[str,Depends(verify_receiver)]
 user_dependency=Annotated[str,Depends(get_user)]
 
 def user_logged(user:user_dependency)->bool:
@@ -44,23 +50,44 @@ pin_validation_dependency=Annotated[dict,Depends(validate_pin)]
 login_user_dependency=Annotated[dict,Depends(user_auth)]
 input_amount_dependency=Annotated[float,Depends(inputAmount)]
 
+def get_balance(user:str="user")->float:
+    balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
+    return balance
+
+def set_balance(balance:float,user:str="user")->None:
+    USER_PRIVATE_CREDENITIALS[user]["balance"]=balance
+    print(f"User: {user}   | Balance{balance}$")
+
 @app.get("/wallet/login")
 def login(res:login_user_dependency,user:user_dependency):
     return {"message":f"Welcome, Sir({user}). Your current balance is {USER_PRIVATE_CREDENITIALS[user]['balance']}$"}
 
 @app.get("/wallet/transaction/withdraw")
 def withdraw(user:user_dependency,logged:user_logged_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
-    current_balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
+    current_balance=get_balance()
     if current_balance<amount:
         raise HTTPException(status_code=400,detail="Insufficient Balance!")
     new_balance=current_balance-amount
-    USER_PRIVATE_CREDENITIALS[user]["balance"]=new_balance
+    set_balance(new_balance)
     return {"message":f"{amount}$ withdrawn from {user}'s account successfully. Updated balance: {new_balance}$"}
 
 @app.get("/wallet/transaction/deposit")
 def deposit(user:user_dependency,logged:user_logged_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
-    current_balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
+    current_balance=get_balance()
     new_balance=current_balance+amount
-    USER_PRIVATE_CREDENITIALS[user]["balance"]=new_balance
+    set_balance(new_balance)
     return {"message":f"{amount}$ deposited to {user}'s account successfully. Updated balance: {new_balance}$"}
+
+@app.get("/wallet/transaction/transfer")
+def transfer(sender:user_dependency,logger:user_dependency,receiver:receiver_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
+    sender_current_balance=get_balance(sender)
+    receiver_current_balance=get_balance(receiver)
+    if sender_current_balance<amount:
+        raise HTTPException(status_code=400,detail="Insufficient Balance!")
+    sender_new_balance=sender_current_balance-amount
+    set_balance(sender,sender_new_balance)
+    receiver_new_balance=receiver_current_balance+amount
+    set_balance(receiver,receiver_new_balance)
+    return {"message":f"{amount}$ transferred by {sender} to {receiver}.","detail":f"Updated balance: {sender}(sender): {sender_new_balance}$ | {receiver}(receiver): {receiver_new_balance}$"}
+
 
