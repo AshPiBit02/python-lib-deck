@@ -18,6 +18,9 @@ def dep_a(db:db_dependency)->dict:
 def dep_b(db:db_dependency)->dict:
     return {"from":"dep-b","db":db}
 
+@app.get("/dep_a")
+def dep_a_route(a:dict=Depends(dep_a)):
+    return {"dependency":a,"total_get_db_calls":call_count["get_db"]}
 @app.get("/combined")
 def combined_route(a:dict=Depends(dep_a),b:dict=Depends(dep_b)):
     return {"a":a,"b":b,"total_get_db_calls":call_count["get_db"]}
