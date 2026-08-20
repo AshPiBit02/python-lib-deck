@@ -56,3 +56,10 @@ def transfer(user:user_dependency,logged:user_logged_dependency,amount:input_amo
     new_balance=current_balance-amount
     USER_PRIVATE_CREDENITIALS[user]["balance"]=new_balance
     return {"message":f"{amount}$ withdrawn from {user}'s account successfully. Updated balance: {new_balance}$"}
+
+@app.get("/wallet/transaction/deposit")
+def deposit(user:user_dependency,logged:user_logged_dependency,amount:input_amount_dependency):
+    current_balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
+    new_balance=current_balance+amount
+    USER_PRIVATE_CREDENITIALS[user]["balance"]=new_balance
+    return {"message":f"{amount}$ deposited to {user}'s account successfully. Updated balance: {new_balance}$"}
