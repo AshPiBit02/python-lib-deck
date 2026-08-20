@@ -23,12 +23,12 @@ def validate_pin(pin:str=Header(...)):
         raise HTTPException(status_code=401,detail="Incorrect PIN")
     return {"message":"Transaction successful"}
 
-pin_validation_dependency=Annotated(dict,Depends(validate_pin))
-login_user_dependency=Annotated(dict,Depends(user_auth))
+pin_validation_dependency=Annotated[dict,Depends(validate_pin)]
+login_user_dependency=Annotated[dict,Depends(user_auth)]
 
 @app.get("/wallet/login")
-def login(login_user_dependency):
-    return {"message":"Welcome, Sir. Your current balance is $999"}
+def login(user:login_user_dependency):
+    return {"message":"Welcome, Sir({user}). Your current balance is $999"}
 
 
 
