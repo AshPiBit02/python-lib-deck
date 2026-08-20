@@ -20,16 +20,17 @@ def get_user()->str:
         raise HTTPException(status_code=403,detail="No user logged in")
     return user
 
-def user_logged()->bool:
-    user=get_user()
+user_dependency=Annotated[str,Depends(get_user)]
+
+def user_logged(user:user_dependency)->bool:
     if not current_user_log_status["logged"]:
          return False
     return True
 
 user_logged_dependency=Annotated[bool,Depends(user_logged)]
 
-def validate_pin(pin:str=Header(...)):
-    if pin != USER_PRIVATE_CREDENITIALS[get_user()]["pin"]:
+def validate_pin(user:user_dependency,pin:str=Header(...)):
+    if pin != USER_PRIVATE_CREDENITIALS[user]["pin"]:
         raise HTTPException(status_code=401,detail="Incorrect PIN")
     return {"message":"Transaction successful"}
 
@@ -37,5 +38,8 @@ pin_validation_dependency=Annotated[dict,Depends(validate_pin)]
 login_user_dependency=Annotated[dict,Depends(user_auth)]
 
 @app.get("/wallet/login")
-def login(res:login_user_dependency):
-    return {"message":f"Welcome, Sir({get_user()}). Your current balance is {USER_PRIVATE_CREDENITIALS[get_user()]['balance']}$"}
+def login(res:login_user_dependency,user:user_dependency):
+    return {"message":f"Welcome, Sir({user}). Your current balance is {USER_PRIVATE_CREDENITIALS[user]['balance']}$"}
+
+@app.get("/wallet/transaction/withdraw")
+def tranfer()
