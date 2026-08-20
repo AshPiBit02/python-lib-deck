@@ -15,12 +15,13 @@ def user_auth(userid:str=Header(...),password:str=Header(...))->dict:
     current_user_log_status["logged"]=True
     return {"message":"Login successsful"}
 def get_user()->str:
-    return current_user_log_status["userid"]
+    user=current_user_log_status["userid"]
+    if not user:
+        raise HTTPException(status_code=403,detail="No user logged in")
+    return user
 
 def user_logged()->bool:
     user=get_user()
-    if not user:
-            raise HTTPException(status_code=403,detail="No user logged in")
     if not current_user_log_status["logged"]:
          return False
     return True
@@ -38,13 +39,3 @@ login_user_dependency=Annotated[dict,Depends(user_auth)]
 @app.get("/wallet/login")
 def login(res:login_user_dependency):
     return {"message":f"Welcome, Sir({get_user()}). Your current balance is {USER_PRIVATE_CREDENITIALS[get_user()]['balance']}$"}
-
-
-
-
-
-
-
-
-
-    
