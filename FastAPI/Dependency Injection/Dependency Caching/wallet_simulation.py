@@ -49,7 +49,7 @@ def login(res:login_user_dependency,user:user_dependency):
     return {"message":f"Welcome, Sir({user}). Your current balance is {USER_PRIVATE_CREDENITIALS[user]['balance']}$"}
 
 @app.get("/wallet/transaction/withdraw")
-def transfer(user:user_dependency,logged:user_logged_dependency,amount:input_amount_dependency):
+def withdraw(user:user_dependency,logged:user_logged_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
     current_balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
     if current_balance<amount:
         raise HTTPException(status_code=400,detail="Insufficient Balance!")
@@ -58,8 +58,9 @@ def transfer(user:user_dependency,logged:user_logged_dependency,amount:input_amo
     return {"message":f"{amount}$ withdrawn from {user}'s account successfully. Updated balance: {new_balance}$"}
 
 @app.get("/wallet/transaction/deposit")
-def deposit(user:user_dependency,logged:user_logged_dependency,amount:input_amount_dependency):
+def deposit(user:user_dependency,logged:user_logged_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
     current_balance=USER_PRIVATE_CREDENITIALS[user]["balance"]
     new_balance=current_balance+amount
     USER_PRIVATE_CREDENITIALS[user]["balance"]=new_balance
     return {"message":f"{amount}$ deposited to {user}'s account successfully. Updated balance: {new_balance}$"}
+
