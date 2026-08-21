@@ -42,7 +42,6 @@ def inputAmount(amount:float=Header(...))->float:
 
 receiver_dependency=Annotated[str,Depends(verify_receiver)]
 user_dependency=Annotated[str,Depends(get_user)]
-pin_validation_dependency=Annotated[dict,Depends(validate_pin)]
 login_user_dependency=Annotated[dict,Depends(user_auth)]
 input_amount_dependency=Annotated[float,Depends(inputAmount)]
 
@@ -56,11 +55,14 @@ def set_balance(balance:float,user:str)->None:
 
 @app.post("/wallet/login")
 def login(res:login_user_dependency,user:user_dependency):
+    print("login successful")
     return {"message":f"Welcome, Sir({user}). Your current balance is {USER_PRIVATE_CREDENITIALS[user]['balance']}$"}
 
 wallet_router=APIRouter(prefix="/wallet",dependencies=[Depends(user_logged)])
-@wallet_router.post("/transaction/withdraw")
-def withdraw(user:user_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
+pin_required_router = APIRouter(prefix="/transaction", dependencies=[Depends(validate_pin,use_cache=False)])
+
+@pin_required_router.post("/withdraw")
+def withdraw(user:user_dependency,amount:input_amount_dependency):
     current_balance=get_balance(user)
     if current_balance<amount:
         raise HTTPException(status_code=400,detail="Insufficient Balance!")
@@ -69,14 +71,14 @@ def withdraw(user:user_dependency,pin:pin_validation_dependency,amount:input_amo
     return {"message":f"{amount}$ withdrawn from {user}'s account successfully. Updated balance: {new_balance}$"}
 
 @wallet_router.post("/transaction/deposit")
-def deposit(user:user_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
+def deposit(user:user_dependency,amount:input_amount_dependency):
     current_balance=get_balance(user)
     new_balance=current_balance+amount
     set_balance(new_balance,user)
     return {"message":f"{amount}$ deposited to {user}'s account successfully. Updated balance: {new_balance}$"}
 
-@wallet_router.post("/transaction/transfer")
-def transfer(sender:user_dependency,receiver:receiver_dependency,pin:pin_validation_dependency,amount:input_amount_dependency):
+@pin_required_router.post("/transfer")
+def transfer(sender:user_dependency,receiver:receiver_dependency,amount:input_amount_dependency):
     if sender==receiver:
         raise HTTPException(status_code=400,detail="Self transfer is not allowed!")
     sender_current_balance=get_balance(sender)
@@ -100,4 +102,5 @@ def logout(user:user_dependency):
     current_user_log_status["logged"]=False
     return {"message":f"{user} logged out sucessfully."}
 
+wallet_router.include_router(pin_required_router)
 app.include_router(wallet_router)
