@@ -90,4 +90,24 @@ def list_project_bids(project_id:int):
 def my_bids(freelancer:freelancer_dependency):
     return [b for b in bids_db if b["freelancer"]==freelancer["username"]]
 
+app.include_router(bidding_router)
+
+if __name__=="__main__":
+    from fastapi.testclient import TestClient
+
+    def fake_new_freelancer_at_limit()->dict:
+        return {"username":"test_new_user","reputation":"new","active_bids":2}
+
+    app.dependency_overrides[get_current_freelancer]=fake_new_freelancer_at_limit
+
+    client=TestClient(app)
+    response=client.post("/projects/1/bid")
+
+    print("\n--- dependency_overrides test ---")
+    print("Status:",response.status_code)
+    print("Body:",response.json())
+    assert response.status_code==4003,"Expected 403 - freelancer is already at bid limit"
+    print("override test passed - blocked as expected")
+
+    app.dependency_overrides.clear()
 
