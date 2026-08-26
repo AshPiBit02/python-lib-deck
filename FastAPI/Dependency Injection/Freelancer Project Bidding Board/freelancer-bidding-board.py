@@ -34,3 +34,14 @@ def get_current_freelancer(x_auth_token:str=Header(...))->dict:
 
 freelancer_dependency=Annotated[dict,Depends(get_current_freelancer)]
 
+def get_bid_session():
+    print("Bid session opened")
+    session={"active":True}
+    try:
+        yield session
+    finally:
+        session["active"]=False
+        print("Bid session closed")
+
+bid_session_dependency=Annotated[dict,Depends(get_bid_session)]
+
