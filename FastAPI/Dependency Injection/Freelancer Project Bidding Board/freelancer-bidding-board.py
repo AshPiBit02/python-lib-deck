@@ -45,3 +45,17 @@ def get_bid_session():
 
 bid_session_dependency=Annotated[dict,Depends(get_bid_session)]
 
+class BidLimitChecker:
+    def __init__(self,limits:dict[str,int]):
+        self.limits=limits
+
+    def __call__(self,freelancer:freelancer_dependency)->None:
+        reputation=freelancer["reputation"]
+        if reputation not in self.limits:
+            return
+        limit=self.limits[reputation]
+        if freelancer["active_bids"]>=limit:
+            raise HTTPException(status_code=403,detail=f"Bid limit reached fro '{reputation}' tier (max {limit} active bids)")
+
+check_bid_limit=BidLimitChecker(BID_LIMITS)
+bid_limit_dependency=Annotated[None,Depends(check_bid_limit)]
