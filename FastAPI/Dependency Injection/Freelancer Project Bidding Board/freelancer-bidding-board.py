@@ -82,5 +82,12 @@ def place_bid(project_id:int,freelancer:freelancer_dependency,_limit_check:bid_l
             "get_current_freelancer_calls_this_request":call_count["get_current_freelancer"],
             }
 
+@bidding_router.get("/{project_id}/bids")
+def list_project_bids(project_id:int):
+    return [b for b in bids_db if b["project_id"]==project_id]
+
+@app.get("/me/bids")
+def my_bids(freelancer:freelancer_dependency):
+    return [b for b in bids_db if b["freelancer"]==freelancer["username"]]
 
 
