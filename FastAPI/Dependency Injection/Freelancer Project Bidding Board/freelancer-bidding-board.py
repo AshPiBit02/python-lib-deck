@@ -9,7 +9,7 @@ freelancer_db={
     "token-alex":{"username":"alex","reputation":"expert","active_bids":5},
 }
 
-project_db=[
+projects_db=[
     {"id":1,"title":"Landing page redesign","buget":500},
     {"id":2,"title":"API integration","buget":1200},
 ]
@@ -59,3 +59,28 @@ class BidLimitChecker:
 
 check_bid_limit=BidLimitChecker(BID_LIMITS)
 bid_limit_dependency=Annotated[None,Depends(check_bid_limit)]
+
+
+bidding_router=APIRouter(prefix="/projects",dependencies=[Depends(get_current_freelancer)])
+
+@bidding_router.get("")
+def list_projects():
+    return projects_db
+
+@bidding_router.post("/{project_id}/bid")
+def place_bid(project_id:int,freelancer:freelancer_dependency,_limit_check:bid_limit_dependency,session:bid_session_dependency):
+    project=next((p for p in projects_db if p["id"]==project_id),None)
+    if project is None:
+        raise HTTPException(status_code=404,detail=f"Project {project_id} not found")
+    if not session["active"]:
+        raise HTTPException(status_code=500,detail="Bid session expired!")
+    new_bid={"id":next_bid_id(),"project_id":project_id,"freelancer":freelancer["username"],"amount":project["budget"],}
+    bids_db.append(new_bid)
+    freelancer["active_bids"]+=1
+    return {"message":f"Bid placed bu {freelancer['username']} on project {project_id}",
+            "bid":new_bid,
+            "get_current_freelancer_calls_this_request":call_count["get_current_freelancer"],
+            }
+
+
+
