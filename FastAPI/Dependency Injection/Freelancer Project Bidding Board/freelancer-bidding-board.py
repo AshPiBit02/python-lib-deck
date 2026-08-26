@@ -21,3 +21,16 @@ BID_LIMITS={"new":2,"established":5}
 def next_bid_id()->int:
     return max((b["id"] for b in bids_db),default=0)+1
 
+
+call_count={"get_current_freelancer":0}
+
+def get_current_freelancer(x_auth_token:str=Header(...))->dict:
+    call_count["get_current_freelancer"]+=1
+    print(f"get_current_freelancer() ran - call #{call_count["get_current_freelancer"]}")
+    freelancer=freelancer_db.get(x_auth_token)
+    if freelancer_db is None:
+        raise HTTPException(status_code=401,detail="Invalid or missing auth token")
+    return freelancer
+
+freelancer_dependency=Annotated[dict,Depends(get_current_freelancer)]
+
