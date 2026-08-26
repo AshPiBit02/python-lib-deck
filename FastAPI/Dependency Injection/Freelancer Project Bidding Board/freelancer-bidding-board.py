@@ -3,15 +3,15 @@ from typing import Annotated
 
 app=FastAPI()
 
-freelancer_db={
+freelancers_db={
     "token-jon":{"username":"jon","reputation":"new","active_bids":0},
     "token-maria":{"username":"maria","reputation":"established","active_bids":2},
     "token-alex":{"username":"alex","reputation":"expert","active_bids":5},
 }
 
 projects_db=[
-    {"id":1,"title":"Landing page redesign","buget":500},
-    {"id":2,"title":"API integration","buget":1200},
+    {"id":1,"title":"Landing page redesign","budget":500},
+    {"id":2,"title":"API integration","budget":1200},
 ]
 
 bids_db:list[dict]=[]
@@ -27,8 +27,8 @@ call_count={"get_current_freelancer":0}
 def get_current_freelancer(x_auth_token:str=Header(...))->dict:
     call_count["get_current_freelancer"]+=1
     print(f"get_current_freelancer() ran - call #{call_count["get_current_freelancer"]}")
-    freelancer=freelancer_db.get(x_auth_token)
-    if freelancer_db is None:
+    freelancer=freelancers_db.get(x_auth_token)
+    if freelancer is None:
         raise HTTPException(status_code=401,detail="Invalid or missing auth token")
     return freelancer
 
@@ -55,7 +55,7 @@ class BidLimitChecker:
             return
         limit=self.limits[reputation]
         if freelancer["active_bids"]>=limit:
-            raise HTTPException(status_code=403,detail=f"Bid limit reached fro '{reputation}' tier (max {limit} active bids)")
+            raise HTTPException(status_code=403,detail=f"Bid limit reached for '{reputation}' tier (max {limit} active bids)")
 
 check_bid_limit=BidLimitChecker(BID_LIMITS)
 bid_limit_dependency=Annotated[None,Depends(check_bid_limit)]
@@ -106,7 +106,7 @@ if __name__=="__main__":
     print("\n--- dependency_overrides test ---")
     print("Status:",response.status_code)
     print("Body:",response.json())
-    assert response.status_code==4003,"Expected 403 - freelancer is already at bid limit"
+    assert response.status_code==403,"Expected 403 - freelancer is already at bid limit"
     print("override test passed - blocked as expected")
 
     app.dependency_overrides.clear()
