@@ -1,8 +1,19 @@
 from sqlalchemy.orm import Session
 from models.user import User
+from fastapi import Depends,Header,HTTPException
+from typing import Annotated
 
-def get_user(db:Session,user_id:int):
-    return db.query(User).filter(User.id==user_id).first()
+def user_existance(db:Session,id:int=Header(...)):
+    user=db.query(User).filter(User.id==id).first()
+    if user is None:
+        raise HTTPException(status_code=404,detail="User not found!")
+    return id
+
+
+user_id_dependency=Annotated[int,Depends(user_existance)]
+
+def get_user(db:Session,user_id:user_id_dependency):
+    return db.query(User).filter(User.id==id).first()
 
 def get_user_by_email(db:Session,email:str):
     return db.query(User).filter(User.email==email).first()
@@ -17,7 +28,7 @@ def create_user(db:Session,name:str,email:str,is_active:bool=None):
     db.refresh(user)
     return user
 
-def update_user(db:Session,user_id:int,name:str|None,status:bool|None):
+def update_user(db:Session,user_id:user_id_dependency,name:str|None,status:bool|None):
     user=db.query(User).filter(User.id==user_id).first()
     if not user:
         return None
@@ -29,7 +40,7 @@ def update_user(db:Session,user_id:int,name:str|None,status:bool|None):
     db.refresh(user)
     return user
 
-def delete_user(db:Session,user_id:int)->bool:
+def delete_user(db:Session,user_id:user_id_dependency)->bool:
     user=db.query(User).filter(User.id==user_id).first()
     if user is None:
         return False
