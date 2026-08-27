@@ -17,7 +17,7 @@ def create_user(db:Session,name:str,email:str):
     db.refresh(user)
     return user
 
-def update_user(db:Session,user_id,name=str):
+def update_user(db:Session,user_id:int,name=str):
     user=db.query(User).filter(User.id==user_id).first()
     if user is None:
         return None
