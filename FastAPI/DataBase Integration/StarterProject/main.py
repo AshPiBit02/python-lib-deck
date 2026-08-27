@@ -14,6 +14,6 @@ def read_user(user_id:int,db:database_dependency):
     return user
 
 @app.post("/users/")
-def create_user(user:str,email:EmailStr,db:database_dependency):
-    user=crud.create_user(db,user,email)
+def create_user(user:str,email:EmailStr,db:database_dependency,is_active:bool=None):
+    user=crud.create_user(db,user,email,is_active)
     return user
