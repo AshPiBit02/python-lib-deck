@@ -17,12 +17,13 @@ def create_user(db:Session,name:str,email:str,is_active:bool=None):
     db.refresh(user)
     return user
 
-def update_user(db:Session,user_id:int,name=str,is_active:bool=None):
+def update_user(db:Session,user_id:int,name:str,status:bool):
     user=db.query(User).filter(User.id==user_id).first()
-    if user is None:
-        return None
-    user.name=name
-    user.is_active=is_active
+    if user is not None:
+        user.name=name
+    if status!=user.is_active:
+        user.is_active=status
+
     db.commit()
     return user
 
