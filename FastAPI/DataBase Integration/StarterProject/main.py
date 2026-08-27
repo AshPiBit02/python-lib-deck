@@ -1,9 +1,22 @@
-from fastapi import FastAPI,Depends
+from fastapi import FastAPI,Depends,HTTPException
 from sqlalchemy.orm import Session
 from db.database import get_db
 from typing import Annotated
 import crud.user as crud
-from pydantic import EmailStr
+from pydantic import EmailStr,BaseModel
+
+class UserCreate(BaseModel):
+    name:str
+    email:EmailStr
+    is_active:bool=True
+
+class UserOut(BaseModel):
+    id:int
+    name:str
+    email:EmailStr
+    is_active:bool
+
+    model_config={"from_attributes":True}
 
 app=FastAPI()
 database_dependency=Annotated[Session,Depends(get_db)]
@@ -13,13 +26,12 @@ def read_user(user_id:int,db:database_dependency):
     user=crud.get_user(db,user_id)
     return user
 
-@app.post("/users/add")
-def create_user(user:str,email:EmailStr,db:database_dependency,is_active:bool=None):
-    user=crud.create_user(db,user,email,is_active)
-    return user
+@app.post("/users/add",response_model=UserOut)
+def create_user(user:UserCreate,db:database_dependency):
+    return crud.create_user(db,user.name,user.email,user.is_active)
 
 @app.get("/users/read")
-def page_read_user(skip:int,limit:int,db:database_dependency):
+def page_read_user(db:database_dependency,skip:int=0,limit:int=100):
     user=crud.get_users(db,skip,limit)
     return user
 
@@ -34,7 +46,7 @@ def delete_user(user_id:int,db:database_dependency):
     return user
 
 @app.patch("/users/update")
-def update_user(db:database_dependency,user_id:int,name:str=None,is_active:bool=False):
-    user=crud.update_user(db,user_id,name,is_active)
+def update_user(db:database_dependency,user_id:int,name:str|None=None,status:bool|None=None):
+    user=crud.update_user(db,user_id,name,status)
     return user
 

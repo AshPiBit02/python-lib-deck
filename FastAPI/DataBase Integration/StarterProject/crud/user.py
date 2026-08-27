@@ -7,7 +7,7 @@ def get_user(db:Session,user_id:int):
 def get_user_by_email(db:Session,email:str):
     return db.query(User).filter(User.email==email).first()
 
-def get_users(db:Session,skip:int=0,limit:int=100):
+def get_users(db:Session,skip:int,limit:int):
     return db.query(User).offset(skip).limit(limit).all()
 
 def create_user(db:Session,name:str,email:str,is_active:bool=None):
@@ -17,14 +17,16 @@ def create_user(db:Session,name:str,email:str,is_active:bool=None):
     db.refresh(user)
     return user
 
-def update_user(db:Session,user_id:int,name:str,status:bool):
+def update_user(db:Session,user_id:int,name:str|None,status:bool|None):
     user=db.query(User).filter(User.id==user_id).first()
-    if user is not None:
+    if not user:
+        return None
+    if name is not None:
         user.name=name
-    if status!=user.is_active:
+    if status is not None:
         user.is_active=status
-
     db.commit()
+    db.refresh(user)
     return user
 
 def delete_user(db:Session,user_id:int)->bool:
