@@ -14,7 +14,7 @@ database_dependency=Annotated[Session,Depends(get_db)]
 def employee_list(db:database_dependency):
     return Empcrud.get_employees(db)
 
-@app.get("/enterprise/employee/view/{id}",response_model=EmpResponse)
+@app.get("/enterprise/employee/view/id/{id}",response_model=EmpResponse)
 def employee_by_id(db:database_dependency,id:int):
     emp=Empcrud.get_employees_by_id(db,id)
     if emp is None:
@@ -36,3 +36,10 @@ def add_employee(db: database_dependency, emp: EmpAdd):
             raise HTTPException(status_code=400, detail="Missing required field")
         else:
             raise HTTPException(status_code=400, detail="Database error")
+
+@app.get("/enterprise/employee/view/department/{department}",response_model=list[EmpResponse])
+def employee_by_dept(db:database_dependency,department:str):
+    emp=Empcrud.get_employee_by_dept(db,department)
+    if not emp:
+        raise HTTPException(status_code=404,detail=f"No employee found in {department} department")
+    return emp

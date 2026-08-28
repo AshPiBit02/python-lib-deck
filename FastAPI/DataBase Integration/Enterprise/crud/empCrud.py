@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.employee import Employee
+from models import Employee,Department
 
 def get_employees(db:Session):
     return db.query(Employee).all()
@@ -13,3 +13,11 @@ def add_new_employee(db:Session,emp:Employee):
     db.commit()
     db.refresh(new_emp)
     return new_emp
+
+def get_employee_by_dept(db: Session, dept: str):
+    return (
+        db.query(Employee)
+        .join(Department, Employee.department_id == Department.id)
+        .filter(Department.name == dept)
+        .all()
+    )
