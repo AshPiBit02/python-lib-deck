@@ -46,8 +46,15 @@ def employee_by_dept(db:database_dependency,department:str):
 
 
 @app.get("/enterprise/employee/view/salary_min_max",response_model=list[EmpSalaryResponse])
-def emplyee_by_salary(db:database_dependency,min:float,max:float):
+def empolyee_by_salary(db:database_dependency,min:float,max:float):
     emp=Empcrud.get_employee_by_salary_range(db,min,max)
     if not emp:
         raise HTTPException(status_code=404,detail=f"No employee found with salary in range({min},{max})")
+    return emp
+
+@app.patch("/enterprise/employee/update/salary")
+def update_employee_salary(db:database_dependency,emp_id:int,new_salary:float):
+    emp=Empcrud.update_employee_salary(db,emp_id,new_salary)
+    if not emp:
+        raise HTTPException(status_code=400,detail="Invalid employee ID or salary amount")
     return emp

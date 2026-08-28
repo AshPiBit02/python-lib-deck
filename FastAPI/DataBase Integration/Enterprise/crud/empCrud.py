@@ -25,3 +25,15 @@ def get_employee_by_dept(db: Session, dept: str):
 def get_employee_by_salary_range(db:Session,min:float,max:float):
     emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).all()
     return emp
+
+def update_employee_salary(db:Session,emp_id:int,new_salary:float):
+    emp=db.query(Employee).filter(Employee.id==emp_id).first()
+    if emp is None:
+        return None
+    old_salary=emp.salary
+    emp.salary=new_salary
+    db.commit()
+    db.refresh(emp)
+    return{
+        "Old salary":old_salary,"Updated salary":emp.salary
+    }
