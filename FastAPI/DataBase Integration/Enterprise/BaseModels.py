@@ -7,7 +7,7 @@ class EmpAdd(BaseModel):
     position:str
     salary:Decimal=Field(gt=0)
     is_active:bool=True
-    department_id:int
+    department_id:int|None=None
 
 class DeptAdd(BaseModel):
     name:str=Field(min_length=5)
