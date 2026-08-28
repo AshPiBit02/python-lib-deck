@@ -25,6 +25,15 @@ class DeptAddResponse(BaseModel):
     name:str
     location:str
 
+class EmpResponse(BaseModel):
+    id:int
+    full_name:str
+    email:EmailStr
+    position:str
+    salary:Decimal
+    is_active:bool=True
+    department_id:int
+
 
 
         
