@@ -2,7 +2,7 @@ from fastapi import FastAPI,Depends,HTTPException
 from sqlalchemy.orm import Session
 from db.database import get_db
 from typing import Annotated
-import crud.user as crud
+import crud.empCrud as Empcrud
 from pydantic import EmailStr,BaseModel
 
 class UserCreate(BaseModel):
