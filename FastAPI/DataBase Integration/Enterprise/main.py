@@ -4,7 +4,7 @@ from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
 from pydantic import EmailStr,BaseModel
-from BaseModels import EmpResponse,EmpAdd,EmpAddResponse
+from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse
 from sqlalchemy.exc import IntegrityError
 
 app=FastAPI()
@@ -42,4 +42,12 @@ def employee_by_dept(db:database_dependency,department:str):
     emp=Empcrud.get_employee_by_dept(db,department)
     if not emp:
         raise HTTPException(status_code=404,detail=f"No employee found in {department} department")
+    return emp
+
+
+@app.get("/enterprise/employee/view/salary_min_max",response_model=list[EmpSalaryResponse])
+def emplyee_by_salary(db:database_dependency,min:float,max:float):
+    emp=Empcrud.get_employee_by_salary_range(db,min,max)
+    if not emp:
+        raise HTTPException(status_code=404,detail=f"No employee found with salary in range({min},{max})")
     return emp

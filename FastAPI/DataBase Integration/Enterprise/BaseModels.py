@@ -18,7 +18,7 @@ class EmpAddResponse(BaseModel):
     id:int
     full_name:str
     position:str
-    department_id:int
+    department_id:int|None=None
 
 class DeptAddResponse(BaseModel):
     id:int
@@ -32,9 +32,14 @@ class EmpResponse(BaseModel):
     position:str
     salary:Decimal
     is_active:bool=True
-    department_id:int
+    department_id:int|None=None
 
-
+class EmpSalaryResponse(BaseModel):
+    id: int
+    full_name: str
+    position: str
+    salary: float
+    department_id: int|None=None
 
         
 

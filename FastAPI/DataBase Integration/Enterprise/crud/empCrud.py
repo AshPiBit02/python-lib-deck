@@ -21,3 +21,7 @@ def get_employee_by_dept(db: Session, dept: str):
         .filter(Department.name == dept)
         .all()
     )
+
+def get_employee_by_salary_range(db:Session,min:float,max:float):
+    emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).all()
+    return emp
