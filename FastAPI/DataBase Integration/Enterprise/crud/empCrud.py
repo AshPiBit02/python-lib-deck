@@ -2,10 +2,10 @@ from sqlalchemy.orm import Session
 from models import Employee,Department
 
 def get_employees(db:Session):
-    return db.query(Employee).all()
+    return db.query(Employee).order_by(Employee.id.asc()).all()
 
 def get_paged_employees(db:Session,skip:int,limit:int):
-    return db.query(Employee).offset(skip).limit(limit).all()
+    return db.query(Employee).order_by(Employee.id.asc()).offset(skip).limit(limit).all()
 
 def get_employees_by_id(db:Session,emp_id:int):
     return db.query(Employee).filter(Employee.id==emp_id).first()
@@ -22,11 +22,12 @@ def get_employee_by_dept(db: Session, dept: str):
         db.query(Employee)
         .join(Department, Employee.department_id == Department.id)
         .filter(Department.name == dept)
+        .order_by(Employee.id.asc())
         .all()
     )
 
 def get_employee_by_salary_range(db:Session,min:float,max:float):
-    emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).all()
+    emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).order_by(Employee.id.asc()).all()
     return emp
 
 def update_employee_salary(db:Session,emp_id:int,new_salary:float):
