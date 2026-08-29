@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import Employee,Department
 from sqlalchemy import func
+from decimal import Decimal
 
 def emp_exists(db:Session,emp_id:int)->bool:
     emp=db.query(Employee).filter(Employee.id==emp_id).count()>0
@@ -112,8 +113,9 @@ def update_department_salary(db:Session,department:str,percentage:float):
     emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
     if not emps:
         return {"message",f"No employees found in department '{department}'"}
+    factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
     for emp in emps:
-        emp.salary=(1+percentage/100)*emp.salary
+        emp.salary=factory*emp.salary
     db.commit()
     db.refresh(emps)
     return {
