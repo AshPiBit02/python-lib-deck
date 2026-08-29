@@ -4,6 +4,9 @@ from models import Employee,Department
 def get_employees(db:Session):
     return db.query(Employee).all()
 
+def get_paged_employees(db:Session,skip:int,limit:int):
+    return db.query(Employee).offset(skip).limit(limit).all()
+
 def get_employees_by_id(db:Session,emp_id:int):
     return db.query(Employee).filter(Employee.id==emp_id).first()
 
@@ -37,3 +40,4 @@ def update_employee_salary(db:Session,emp_id:int,new_salary:float):
     return{
         "Old salary":old_salary,"Updated salary":emp.salary
     }
+

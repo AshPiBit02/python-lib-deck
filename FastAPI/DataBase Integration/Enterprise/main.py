@@ -58,3 +58,10 @@ def update_employee_salary(db:database_dependency,emp_id:int,new_salary:float):
     if not emp:
         raise HTTPException(status_code=400,detail="Invalid employee ID or salary amount")
     return emp
+
+@app.get("/enterprise/employee/view/page",response_model=list[EmpResponse])
+def paged_employee(db:database_dependency,skip:int,limit:int):
+    emp=Empcrud.get_paged_employees(db,skip,limit)
+    if not emp:
+        raise HTTPException(status_code=404,detail="No employee found!")
+    return emp
