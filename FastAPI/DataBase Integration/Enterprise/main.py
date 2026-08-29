@@ -82,5 +82,12 @@ def delete_employee(db:database_dependency,emp_id:int):
             raise HTTPException(status_code=400,detail=result["error"])
     return {"message":result["message"]}
 
+@employee_router.patch("/update/status/deactivate")
+def activate_employee(db:database_dependency,emp_id:int):
+    result=Empcrud.deactivate_employee(db,emp_id)
+    if not result["success"]:
+        raise HTTPException(status_code=404,detail=result["error"])
+    return {"message":result["message"]}
+
 enterprise_router.include_router(employee_router)
 app.include_router(enterprise_router)
