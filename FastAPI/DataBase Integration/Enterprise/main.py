@@ -12,7 +12,7 @@ employee_router=APIRouter(prefix="/employee")
 
 database_dependency=Annotated[Session,Depends(get_db)]
 
-@employee_router.get("/view/list",response_model=EmpResponse)
+@employee_router.get("/view/list",response_model=list[EmpResponse])
 def employee_list(db:database_dependency):
     result = Empcrud.get_employees(db)
     if not result:
@@ -100,7 +100,7 @@ def reactivate_employee(db:database_dependency,emp_id:int):
         raise HTTPException(status_code=404,detail=result["error"])
     return {"message":result["message"]}
 
-@employee_router.get("/view/active/list",response_model=EmpResponse)
+@employee_router.get("/view/active/list",response_model=list[EmpResponse])
 def active_employee_list(db:database_dependency):
     result=Empcrud.get_active_employee_list(db)
     if not result:

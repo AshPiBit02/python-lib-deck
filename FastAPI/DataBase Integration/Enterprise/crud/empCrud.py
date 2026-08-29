@@ -103,5 +103,5 @@ def reactivate_employee(db:Session,emp_id:int):
     return {"success":True,"message":f"Employee with id {emp_id} reactivated"}
 
 def get_active_employee_list(db:Session):
-    emps=db.query(Employee).filter(Employee.is_active).all()
+    emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
     return emps
