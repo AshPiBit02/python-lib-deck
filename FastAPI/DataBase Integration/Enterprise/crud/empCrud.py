@@ -1,6 +1,12 @@
 from sqlalchemy.orm import Session
 from models import Employee,Department
 
+def emp_exists(db:Session,emp_id:int)->bool:
+    emp=db.query(Employee).filter(Employee.id==emp_id).count()>0
+    if not emp:
+        return False
+    return True
+
 def get_employees(db:Session):
     return db.query(Employee).order_by(Employee.id.asc()).all()
 
@@ -42,3 +48,28 @@ def update_employee_salary(db:Session,emp_id:int,new_salary:float):
         "Old salary":old_salary,"Updated salary":emp.salary
     }
 
+def change_employee_department(db: Session, emp_id: int, new_department: str):
+    emp = get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"error": f"Employee with id {emp_id} not found"}
+
+    old_department_id = emp.department_id
+
+    # Get department id directly
+    new_dept_id = db.query(Department.id).filter(Department.name == new_department).scalar()
+    if new_dept_id is None:
+        return {"error": f"Department '{new_department}' not found"}
+
+    # Update department
+    emp.department_id = new_dept_id
+    db.commit()
+    db.refresh(emp)
+
+    return {
+        "message": f"Changed department of employee with id {emp_id} "
+                   f"from {old_department_id} to {new_dept_id}"
+    }
+
+
+    
+    

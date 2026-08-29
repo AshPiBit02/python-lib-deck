@@ -8,8 +8,8 @@ from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse
 from sqlalchemy.exc import IntegrityError
 
 app=FastAPI()
-
-employee_router=APIRouter(prefix="/enterprise/employee")
+enterprise_router=APIRouter(prefix="/enterprise")
+employee_router=APIRouter(prefix="/employee")
 
 database_dependency=Annotated[Session,Depends(get_db)]
 
@@ -69,4 +69,12 @@ def paged_employee(db:database_dependency,skip:int,limit:int):
         raise HTTPException(status_code=404,detail="No employee found!")
     return emp
 
-app.include_router(employee_router)
+@employee_router.patch("/update/department")
+def update_employee_department(db:database_dependency,emp_id:int,new_department:str):
+    emp=Empcrud.change_employee_department(db,emp_id,new_department)
+    if not emp:
+        raise HTTPException(status_code=400,detail="Invalid department or employee id")
+    return emp
+
+enterprise_router.include_router(employee_router)
+app.include_router(enterprise_router)
