@@ -13,7 +13,7 @@ employee_router=APIRouter(prefix="/enterprise/employee")
 
 database_dependency=Annotated[Session,Depends(get_db)]
 
-@employee_router.get("/enterprise/employee/view/list")
+@employee_router.get("/view/list")
 def employee_list(db:database_dependency):
     return Empcrud.get_employees(db)
 
@@ -24,7 +24,7 @@ def employee_by_id(db:database_dependency,id:int):
         raise HTTPException(status_code=404,detail=f"Employee with id {id} not found!")
     return emp
 
-@employee_router.post("/enterprise/employee/add", response_model=EmpAddResponse)
+@employee_router.post("/add", response_model=EmpAddResponse)
 def add_employee(db: database_dependency, emp: EmpAdd):
     try:
         return Empcrud.add_new_employee(db, emp)
@@ -40,7 +40,7 @@ def add_employee(db: database_dependency, emp: EmpAdd):
         else:
             raise HTTPException(status_code=400, detail="Database error")
 
-@employee_router.get("/enterprise/employee/view/department/{department}",response_model=list[EmpResponse])
+@employee_router.get("/view/department/{department}",response_model=list[EmpResponse])
 def employee_by_dept(db:database_dependency,department:str):
     emp=Empcrud.get_employee_by_dept(db,department)
     if not emp:
@@ -48,21 +48,21 @@ def employee_by_dept(db:database_dependency,department:str):
     return emp
 
 
-@employee_router.get("/enterprise/employee/view/salary_min_max",response_model=list[EmpSalaryResponse])
+@employee_router.get("/view/salary_min_max",response_model=list[EmpSalaryResponse])
 def empolyee_by_salary(db:database_dependency,min:float,max:float):
     emp=Empcrud.get_employee_by_salary_range(db,min,max)
     if not emp:
         raise HTTPException(status_code=404,detail=f"No employee found with salary in range({min},{max})")
     return emp
 
-@employee_router.patch("/enterprise/employee/update/salary")
+@employee_router.patch("/update/salary")
 def update_employee_salary(db:database_dependency,emp_id:int,new_salary:float):
     emp=Empcrud.update_employee_salary(db,emp_id,new_salary)
     if not emp:
         raise HTTPException(status_code=400,detail="Invalid employee ID or salary amount")
     return emp
 
-@employee_router.get("/enterprise/employee/view/page",response_model=list[EmpResponse])
+@employee_router.get("/view/page",response_model=list[EmpResponse])
 def paged_employee(db:database_dependency,skip:int,limit:int):
     emp=Empcrud.get_paged_employees(db,skip,limit)
     if not emp:
