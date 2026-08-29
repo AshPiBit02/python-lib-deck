@@ -1,4 +1,4 @@
-from pydantic import BaseModel,Field,EmailStr,field_validator
+from pydantic import BaseModel,Field,EmailStr,field_validator,ConfigDict
 from decimal import Decimal
 
 class EmpAdd(BaseModel):
@@ -19,11 +19,13 @@ class EmpAddResponse(BaseModel):
     full_name:str
     position:str
     department_id:int|None=None
+    model_config = ConfigDict(from_attributes=True)
 
 class DeptAddResponse(BaseModel):
     id:int
     name:str
     location:str
+    model_config = ConfigDict(from_attributes=True)
 
 class EmpResponse(BaseModel):
     id:int
@@ -33,6 +35,7 @@ class EmpResponse(BaseModel):
     salary:Decimal
     is_active:bool=True
     department_id:int|None=None
+    model_config = ConfigDict(from_attributes=True)
 
 class EmpSalaryResponse(BaseModel):
     id: int
@@ -40,6 +43,7 @@ class EmpSalaryResponse(BaseModel):
     position: str
     salary: float
     department_id: int|None=None
+    model_config = ConfigDict(from_attributes=True)
 
         
 

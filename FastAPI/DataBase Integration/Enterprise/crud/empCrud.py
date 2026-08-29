@@ -94,15 +94,14 @@ def deactivate_employee(db:Session,emp_id:int):
 def reactivate_employee(db:Session,emp_id:int):
     emp=get_employees_by_id(db,emp_id)
     if not emp:
-         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
     if emp.is_active:
         return {"success":True,"message":f"Employee with id {emp_id} is already active"}
     emp.is_active=True
     db.commit()
     db.refresh(emp)
     return {"success":True,"message":f"Employee with id {emp_id} reactivated"}
-    
 
-
-
-    
+def get_active_employee_list(db:Session):
+    emps=db.query(Employee).filter(Employee.is_active).all()
+    return emps
