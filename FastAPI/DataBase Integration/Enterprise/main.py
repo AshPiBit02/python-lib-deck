@@ -70,15 +70,17 @@ def paged_employee(db:database_dependency,skip:int,limit:int):
 
 @employee_router.patch("/update/department")
 def update_employee_department(db:database_dependency,emp_id:int,new_department:str):
-    emp=Empcrud.change_employee_department(db,emp_id,new_department)
-    if not emp:
-        raise HTTPException(status_code=400,detail="Invalid department or employee id")
-    return emp
+    result=Empcrud.change_employee_department(db,emp_id,new_department)
+    if not result["success"]:
+        raise HTTPException(status_code=400,detail=result["error"])
+    return {"message":result["message"]}
 
 @employee_router.delete("/delete/employee")
 def delete_employee(db:database_dependency,emp_id:int):
     result=Empcrud.remove_employee(db,emp_id)
-    return result
+    if not result["success"]:
+            raise HTTPException(status_code=400,detail=result["error"])
+    return {"message":result["message"]}
 
 enterprise_router.include_router(employee_router)
 app.include_router(enterprise_router)
