@@ -80,7 +80,7 @@ def remove_employee(db:Session,emp_id:int):
         "message":f"Records of employee with id {emp_id} delete successfully!"
     }
 
-def deactivate_employee(db:Session,emp_id):
+def deactivate_employee(db:Session,emp_id:int):
     emp=get_employees_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
@@ -91,5 +91,18 @@ def deactivate_employee(db:Session,emp_id):
     db.refresh(emp)
     return {"success":True,"message":f"Employee with id {emp_id} deactivated"}
 
+def reactivate_employee(db:Session,emp_id:int):
+    emp=get_employees_by_id(db,emp_id)
+    if not emp:
+         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+    if emp.is_active:
+        return {"success":True,"message":f"Employee with id {emp_id} is already active"}
+    emp.is_active=True
+    db.commit()
+    db.refresh(emp)
+    return {"success":True,"message":f"Employee with id {emp_id} reactivated"}
     
+
+
+
     
