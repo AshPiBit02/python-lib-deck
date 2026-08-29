@@ -114,6 +114,11 @@ def active_employee_list(db:database_dependency):
         raise HTTPException(status_code=404,detail="No active employee found!")
     return result
 
+@secure_router.patch("/update/salary/department")
+def update_salary_by_department(db:database_dependency,department:str,percentage:float):
+    result=Empcrud.update_department_salary(db,department,percentage)
+    return result
+
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(secure_router)
 app.include_router(enterprise_router)

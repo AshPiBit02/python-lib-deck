@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models import Employee,Department
 from sqlalchemy import func
+
 def emp_exists(db:Session,emp_id:int)->bool:
     emp=db.query(Employee).filter(Employee.id==emp_id).count()>0
     if not emp:
@@ -105,3 +106,17 @@ def reactivate_employee(db:Session,emp_id:int):
 def get_active_employee_list(db:Session):
     emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
     return emps
+
+def update_department_salary(db:Session,department:str,percentage:float):
+    change="increased" if percentage>0 else "decreased"
+    emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
+    if not emps:
+        return {"message",f"No employees found in department '{department}'"}
+    for emp in emps:
+        emp.salary=(1+percentage/100)*emp.salary
+    db.commit()
+    db.refresh(emps)
+    return {
+        "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
+        "updated_ids":[emp.id for emp in emps]}
+    
