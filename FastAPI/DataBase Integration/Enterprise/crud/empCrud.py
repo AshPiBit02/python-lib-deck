@@ -1,8 +1,19 @@
 from sqlalchemy.orm import Session
-from models.employee import Employee
+from models import Employee,Department
+from sqlalchemy import func
+from decimal import Decimal
+
+def emp_exists(db:Session,emp_id:int)->bool:
+    emp=db.query(Employee).filter(Employee.id==emp_id).count()>0
+    if not emp:
+        return False
+    return True
 
 def get_employees(db:Session):
-    return db.query(Employee).all()
+    return db.query(Employee).order_by(Employee.id.asc()).all()
+
+def get_paged_employees(db:Session,skip:int,limit:int):
+    return db.query(Employee).order_by(Employee.id.asc()).offset(skip).limit(limit).all()
 
 def get_employees_by_id(db:Session,emp_id:int):
     return db.query(Employee).filter(Employee.id==emp_id).first()
@@ -13,3 +24,101 @@ def add_new_employee(db:Session,emp:Employee):
     db.commit()
     db.refresh(new_emp)
     return new_emp
+
+def get_employee_by_dept(db: Session, dept: str):
+    return (
+        db.query(Employee)
+        .join(Department, Employee.department_id == Department.id)
+        .filter(func.lower(Department.name) == dept.lower())
+        .order_by(Employee.id.asc())
+        .all()
+    )
+
+def get_employee_by_salary_range(db:Session,min:float,max:float):
+    emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).order_by(Employee.id.asc()).all()
+    return emp
+
+def update_employee_salary(db:Session,emp_id:int,new_salary:float):
+    emp=db.query(Employee).filter(Employee.id==emp_id).first()
+    if emp is None:
+        return None
+    old_salary=emp.salary
+    emp.salary=new_salary
+    db.commit()
+    db.refresh(emp)
+    return{
+        "Old salary":old_salary,"Updated salary":emp.salary
+    }
+
+def change_employee_department(db: Session, emp_id: int, new_department: str):
+    emp = get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"success":False,"error": f"Employee with id {emp_id} not found!"}
+
+    old_department_id = emp.department_id
+
+    new_dept_id = db.query(Department.id).filter(func.lower(Department.name) == new_department.lower()).scalar()
+    if new_dept_id is None:
+        return {"success":False,"error": f"Department '{new_department}' not found!"}
+
+    emp.department_id = new_dept_id
+    db.commit()
+    db.refresh(emp)
+
+    return {
+        "success":True,
+        "message": f"Changed department of employee with id {emp_id} "
+                   f"from {old_department_id} to {new_dept_id}"
+    }
+
+def remove_employee(db:Session,emp_id:int):
+    emp=get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+    db.delete(emp)
+    db.commit()
+    return{
+        "success":True,
+        "message":f"Records of employee with id {emp_id} delete successfully!"
+    }
+
+def deactivate_employee(db:Session,emp_id:int):
+    emp=get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+    if not emp.is_active:
+        return {"success":True,"message":f"Employee with id {emp_id} is already deactive"}
+    emp.is_active=False
+    db.commit()
+    db.refresh(emp)
+    return {"success":True,"message":f"Employee with id {emp_id} deactivated"}
+
+def reactivate_employee(db:Session,emp_id:int):
+    emp=get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+    if emp.is_active:
+        return {"success":True,"message":f"Employee with id {emp_id} is already active"}
+    emp.is_active=True
+    db.commit()
+    db.refresh(emp)
+    return {"success":True,"message":f"Employee with id {emp_id} reactivated"}
+
+def get_active_employee_list(db:Session):
+    emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
+    return emps
+
+def update_department_salary(db:Session,department:str,percentage:float):
+    change="increased" if percentage>0 else "decreased"
+    emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
+    if not emps:
+        return {"message",f"No employees found in department '{department}'"}
+    factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
+    for emp in emps:
+        emp.salary=factory*emp.salary
+    db.commit()
+    db.refresh(emps)
+    return {
+        "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
+        "updated_ids":[emp.id for emp in emps]}
+    

@@ -6,8 +6,9 @@ class Settings(BaseSettings):
     db_user:str
     db_password:str
     db_host:str="localhost"
-    db_port:int="5432"
+    db_port:str="5432"
     db_name:str
+    secret_key:str
 
     @property
     def database_url(self)->str:
