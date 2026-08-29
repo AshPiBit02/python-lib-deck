@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from models import Employee,Department
-
+from sqlalchemy import func
 def emp_exists(db:Session,emp_id:int)->bool:
     emp=db.query(Employee).filter(Employee.id==emp_id).count()>0
     if not emp:
@@ -27,7 +27,7 @@ def get_employee_by_dept(db: Session, dept: str):
     return (
         db.query(Employee)
         .join(Department, Employee.department_id == Department.id)
-        .filter(Department.name == dept)
+        .filter(func.lower(Department.name) == dept.lower())
         .order_by(Employee.id.asc())
         .all()
     )
@@ -55,7 +55,7 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
 
     old_department_id = emp.department_id
 
-    new_dept_id = db.query(Department.id).filter(Department.name == new_department).scalar()
+    new_dept_id = db.query(Department.id).filter(func.lower(Department.name) == new_department.lower()).scalar()
     if new_dept_id is None:
         return {"success":False,"error": f"Department '{new_department}' not found!"}
 
