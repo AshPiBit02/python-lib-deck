@@ -51,14 +51,14 @@ def update_employee_salary(db:Session,emp_id:int,new_salary:float):
 def change_employee_department(db: Session, emp_id: int, new_department: str):
     emp = get_employees_by_id(db,emp_id)
     if not emp:
-        return {"error": f"Employee with id {emp_id} not found"}
+        return {"error": f"Employee with id {emp_id} not found!"}
 
     old_department_id = emp.department_id
 
     # Get department id directly
     new_dept_id = db.query(Department.id).filter(Department.name == new_department).scalar()
     if new_dept_id is None:
-        return {"error": f"Department '{new_department}' not found"}
+        return {"error": f"Department '{new_department}' not found!"}
 
     # Update department
     emp.department_id = new_dept_id
@@ -69,6 +69,17 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
         "message": f"Changed department of employee with id {emp_id} "
                    f"from {old_department_id} to {new_dept_id}"
     }
+
+def remove_employee(db:Session,emp_id:int):
+    emp=get_employees_by_id(db,emp_id)
+    if not emp:
+        return {"error":f"Employee with id {emp_id} not found!"}
+    db.delete(emp)
+    db.commit()
+    return{
+        "message":f"Records of employee with id {emp_id} delete successfully!"
+    }
+
 
 
     

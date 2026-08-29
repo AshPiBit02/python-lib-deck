@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
-from pydantic import EmailStr,BaseModel
 from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse
 from sqlalchemy.exc import IntegrityError
 
@@ -75,6 +74,11 @@ def update_employee_department(db:database_dependency,emp_id:int,new_department:
     if not emp:
         raise HTTPException(status_code=400,detail="Invalid department or employee id")
     return emp
+
+@employee_router.delete("/delete/employee")
+def delete_employee(db:database_dependency,emp_id:int):
+    result=Empcrud.remove_employee(db,emp_id)
+    return result
 
 enterprise_router.include_router(employee_router)
 app.include_router(enterprise_router)
