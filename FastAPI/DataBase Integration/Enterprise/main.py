@@ -67,10 +67,10 @@ def empolyee_by_salary(db:database_dependency,min:float,max:float):
 
 @secure_router.patch("/update/salary")
 def update_employee_salary(db:database_dependency,emp_id:int,new_salary:float):
-    emp=Empcrud.update_employee_salary(db,emp_id,new_salary)
-    if not emp:
+    result=Empcrud.update_employee_salary(db,emp_id,new_salary)
+    if not result:
         raise HTTPException(status_code=400,detail="Invalid employee ID or salary amount")
-    return emp
+    return result
 
 @employee_router.get("/view/page",response_model=list[EmpResponse])
 def paged_employee(db:database_dependency,skip:int,limit:int):
