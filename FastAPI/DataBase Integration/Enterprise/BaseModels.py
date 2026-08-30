@@ -54,7 +54,10 @@ class EmpSalaryResponse(BaseModel):
     department_id: int|None=None
     model_config = ConfigDict(from_attributes=True)
 
-        
+class DeptUpdate(BaseModel):
+    name:str|None=None
+    location:str|None=None
+    budget:Decimal|None=None
 
 
 

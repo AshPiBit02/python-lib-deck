@@ -131,25 +131,32 @@ def update_salary_by_department(db:database_dependency,department:str,percentage
     return result
 
 # Department Routers
-@department_router.get("/available")
+@department_router.get("/view/available")
 def department_exists(db:database_dependency,dept:str):
     result=DeptCrud.dept_exists(db,dept)
     if not result:
         return {"exists":False}
     return {"exists":True}
 
+@department_router.get("/view/departmentByID",response_model=DeptResponse)
+def get_department_by_id(db:database_dependency,dept_id:int):
+    dept=DeptCrud.dept_by_id(db,dept_id)
+    if not dept:
+        raise HTTPException(status_code=404,detail=f"Deparment having id '{dept_id}' doesn't exists!")
+    return dept
+
 @department_router.get("/detailedList",response_model=list[DeptResponse])
 def get_department_detailed_list(db:database_dependency):
     result=DeptCrud.dept_detail_list(db)
     if not result:
-        raise HTTPException(status_code=404,detail="No department exits!")
+        raise HTTPException(status_code=404,detail="No departments are currently registered in the system!")
     return result
 
 @department_router.get("/nameList")
 def get_department_name_list(db:database_dependency):
     depts=DeptCrud.dept_name_list(db)
     if not depts:
-        raise HTTPException(status_code=404,detail="No department exits!")
+        raise HTTPException(status_code=404,detail="No department names found. Please add departments frist.")
     return {"Departments":depts}
 
 secure_department_router=APIRouter(prefix="/department",dependencies=[Depends(key_validation)])

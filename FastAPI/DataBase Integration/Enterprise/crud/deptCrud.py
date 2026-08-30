@@ -8,6 +8,9 @@ def dept_exists(db:Session,dept_name:str)->bool:
     if not dept:
         return False
     return True
+def dept_by_id(db:Session,dept_id:int):
+    dept=db.query(Department).filter(Department.id==dept_id).first()
+    return dept
 
 def dept_detail_list(db:Session):
     dept=db.query(Department).all()
@@ -27,3 +30,7 @@ def add_new_department(db:Session,dept:Department):
 def search_department_by_key(db:Session,key:str):
     depts=db.query(Department).filter(Department.name.ilike(f"%{key}%")).all()
     return depts
+
+# def update_department(db:Session,dept_id:int,updated_department:Department):
+
+#     if updated_department.name:
