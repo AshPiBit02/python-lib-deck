@@ -126,7 +126,7 @@ def update_salary_by_department(db:database_dependency,department:str,percentage
 
 # Department Routers
 @department_router.get("/available")
-def deptment_exists(db:database_dependency,dept:str):
+def department_exists(db:database_dependency,dept:str):
     result=DeptCrud.dept_exists(db,dept)
     if not result:
         return {"exists":False}
