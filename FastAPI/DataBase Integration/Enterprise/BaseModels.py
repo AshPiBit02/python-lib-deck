@@ -14,6 +14,14 @@ class DeptAdd(BaseModel):
     location:str=Field(min_length=1)
     budget:Decimal=Field(gt=0)
 
+
+class DeptResponse(BaseModel):
+    id:int
+    name:str
+    location:str
+    budget:Decimal
+    model_config = ConfigDict(from_attributes=True)
+
 class EmpAddResponse(BaseModel):
     id:int
     full_name:str
@@ -25,6 +33,7 @@ class DeptAddResponse(BaseModel):
     id:int
     name:str
     location:str
+    budget:Decimal
     model_config = ConfigDict(from_attributes=True)
 
 class EmpResponse(BaseModel):
@@ -45,7 +54,10 @@ class EmpSalaryResponse(BaseModel):
     department_id: int|None=None
     model_config = ConfigDict(from_attributes=True)
 
-        
+class DeptUpdate(BaseModel):
+    name:str|None=None
+    location:str|None=None
+    budget:Decimal|None=None
 
 
 

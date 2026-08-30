@@ -25,6 +25,9 @@ def add_new_employee(db:Session,emp:Employee):
     db.refresh(new_emp)
     return new_emp
 
+def search_employee_by_key(db:Session,key:str):
+    emps=db.query(Employee).filter(Employee.full_name.ilike(f"%{key}%")).all()
+    return emps
 def get_employee_by_dept(db: Session, dept: str):
     return (
         db.query(Employee)
@@ -117,7 +120,6 @@ def update_department_salary(db:Session,department:str,percentage:float):
     for emp in emps:
         emp.salary=factory*emp.salary
     db.commit()
-    db.refresh(emps)
     return {
         "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
         "updated_ids":[emp.id for emp in emps]}
