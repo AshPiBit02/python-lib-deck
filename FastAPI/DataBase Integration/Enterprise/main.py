@@ -39,7 +39,7 @@ def employee_by_id(db:database_dependency,id:int):
         raise HTTPException(status_code=404,detail=f"Employee with id {id} not found!")
     return emp
 
-@secure_employee_router.post("/add", response_model=EmpAddResponse)
+@secure_employee_router.post("/add/newEmployee", response_model=EmpAddResponse)
 def add_employee(db: database_dependency, emp: EmpAdd):
     try:
         return Empcrud.add_new_employee(db, emp)
@@ -153,6 +153,13 @@ def get_department_name_list(db:database_dependency):
     return {"Departments":depts}
 
 secure_department_router=APIRouter(prefix="/department",dependencies=[Depends(key_validation)])
+
+@department_router.get("/view/search/nameKey",response_model=list[DeptResponse])
+def search_department_by_key(db:database_dependency,key:str):
+    depts=DeptCrud.search_department_by_key(db,key)
+    if not depts:
+        raise HTTPException(status_code=404, detail=f"No employees were found matching the search key '{key}'.")
+    return depts
 
 @secure_department_router.post("/add/newDepartment",response_model=DeptAddResponse)
 def add_new_department(db:database_dependency,new_dept:DeptAdd):

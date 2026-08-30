@@ -24,3 +24,6 @@ def add_new_department(db:Session,dept:Department):
     db.refresh(new_dept)
     return new_dept
 
+def search_department_by_key(db:Session,key:str):
+    depts=db.query(Department).filter(Department.name.ilike(f"%{key}%")).all()
+    return depts
