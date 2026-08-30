@@ -33,6 +33,7 @@ class DeptAddResponse(BaseModel):
     id:int
     name:str
     location:str
+    budget:Decimal
     model_config = ConfigDict(from_attributes=True)
 
 class EmpResponse(BaseModel):

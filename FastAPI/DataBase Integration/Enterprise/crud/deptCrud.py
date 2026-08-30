@@ -16,3 +16,10 @@ def dept_detail_list(db:Session):
 def dept_name_list(db:Session):
     depts=db.query(Department.name).all()
     return [row[0] for row in depts]
+
+def add_new_department(db:Session,dept:Department):
+    new_dept=Department(name=dept.name,location=dept.location,budget=dept.budget)
+    db.add(new_dept)
+    db.commit()
+    db.refresh(new_dept)
+    return new_dept
