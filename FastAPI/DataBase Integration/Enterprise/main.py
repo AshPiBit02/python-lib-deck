@@ -4,7 +4,7 @@ from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
 import crud.deptCrud as DeptCrud
-from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse
+from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -131,6 +131,13 @@ def department_exists(db:database_dependency,dept:str):
     if not result:
         return {"exists":False}
     return {"exists":True}
+
+@department_router.get("/detailedList",response_model=list[DeptResponse])
+def get_department_detailed_list(db:database_dependency):
+    result=DeptCrud.dept_detail_list(db)
+    if not result:
+        raise HTTPException(status_code=404,detail="No department exits!")
+    return result
 
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)

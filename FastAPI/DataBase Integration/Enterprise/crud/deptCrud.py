@@ -9,4 +9,6 @@ def dept_exists(db:Session,dept_name:str)->bool:
         return False
     return True
 
-def 
+def dept_detail_list(db:Session):
+    dept=db.query(Department).all()
+    return dept
