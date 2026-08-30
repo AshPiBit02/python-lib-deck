@@ -4,7 +4,7 @@ from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
 import crud.deptCrud as DeptCrud
-from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse
+from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -147,8 +147,22 @@ def get_department_name_list(db:database_dependency):
     return {"Departments":depts}
 
 secure_department_router=APIRouter(prefix="/department",dependencies=[Depends(key_validation)])
+
 @secure_department_router.post("/add/newDepartment",response_model=DeptAddResponse)
-def add_new_department(db:database_dependency)
+def add_new_department(db:database_dependency,new_dept:DeptAdd):
+    try:
+        return DeptCrud.add_new_department(db,new_dept)
+    except IntegrityError as e:
+        db.rollback()
+        print("RAW ERROR:", str(e.orig))
+        msg = str(e.orig).lower()
+        if "name" in msg:
+            raise HTTPException(status_code=400, detail="Duplicate department not allowed")
+        elif "null value" in msg:
+            raise HTTPException(status_code=400, detail="Missing required field")
+        else:
+            raise HTTPException(status_code=400, detail="Database error")
+
 
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
