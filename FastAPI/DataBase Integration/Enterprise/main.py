@@ -62,6 +62,12 @@ def employee_by_dept(db:database_dependency,department:str):
         raise HTTPException(status_code=404,detail=f"No employee found in {department} department")
     return emp
 
+@employee_router.get("/view/search/nameKey",response_model=list[EmpResponse])
+def employee_by_key(db:database_dependency,key:str):
+    emps=Empcrud.search_employee_by_key(db,key)
+    if not emps:
+        raise HTTPException(status_code=404,detail=f"No employees were found matching the search key '{key}'.")
+    return emps
 
 @employee_router.get("/view/salary_min_max",response_model=list[EmpSalaryResponse])
 def empolyee_by_salary(db:database_dependency,min:float,max:float):

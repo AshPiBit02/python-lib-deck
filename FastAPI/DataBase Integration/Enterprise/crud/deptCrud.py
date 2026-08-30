@@ -23,3 +23,4 @@ def add_new_department(db:Session,dept:Department):
     db.commit()
     db.refresh(new_dept)
     return new_dept
+
