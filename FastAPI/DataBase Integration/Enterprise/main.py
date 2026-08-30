@@ -4,7 +4,7 @@ from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
 import crud.deptCrud as DeptCrud
-from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd
+from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -183,7 +183,19 @@ def add_new_department(db:database_dependency,new_dept:DeptAdd):
         else:
             raise HTTPException(status_code=400, detail="Database error")
 
-
+@secure_department_router.patch("/update",response_model=DeptResponse)
+def update_department(db:database_dependency,dept_id:int,dept:DeptUpdate):
+    try:
+        return DeptCrud.update_department(db,dept_id,dept)
+    except IntegrityError as e:
+        db.rollback()
+        print("RAW ERROR:", str(e.orig))
+        msg = str(e.orig).lower()
+        if "name" in msg:
+            raise HTTPException(status_code=400, detail="Duplicate department not allowed")
+        else:
+            raise HTTPException(status_code=400, detail="Database error")
+    
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
 enterprise_router.include_router(secure_employee_router)
