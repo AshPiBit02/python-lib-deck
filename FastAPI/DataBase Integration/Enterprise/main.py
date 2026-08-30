@@ -139,6 +139,13 @@ def get_department_detailed_list(db:database_dependency):
         raise HTTPException(status_code=404,detail="No department exits!")
     return result
 
+@department_router.get("/nameList")
+def get_department_name_list(db:database_dependency):
+    depts=DeptCrud.dept_name_list(db)
+    if not depts:
+        raise HTTPException(status_code=404,detail="No department exits!")
+    return {"Departments":depts}
+
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
 enterprise_router.include_router(secure_router)

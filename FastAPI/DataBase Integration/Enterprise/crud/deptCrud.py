@@ -12,3 +12,7 @@ def dept_exists(db:Session,dept_name:str)->bool:
 def dept_detail_list(db:Session):
     dept=db.query(Department).all()
     return dept
+
+def dept_name_list(db:Session):
+    depts=db.query(Department.name).all()
+    return [row[0] for row in depts]
