@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
+import crud.deptCrud as DeptCrud
 from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
@@ -10,13 +11,17 @@ from core.config import settings
 app=FastAPI()
 enterprise_router=APIRouter(prefix="/enterprise")
 employee_router=APIRouter(prefix="/employee")
+department_router=APIRouter(prefix="/department")
 
 database_dependency=Annotated[Session,Depends(get_db)]
 
 def key_validation(key:str=Header(...)):
     if key!=settings.secret_key:
         raise HTTPException(status_code=403,detail="Invalid secret key!")
-    
+
+
+# Employee routers
+
 secure_router=APIRouter(prefix="/employee",dependencies=[Depends(key_validation)])
 
 @employee_router.get("/view/list",response_model=list[EmpResponse])
@@ -119,6 +124,15 @@ def update_salary_by_department(db:database_dependency,department:str,percentage
     result=Empcrud.update_department_salary(db,department,percentage)
     return result
 
+# Department Routers
+@department_router.get("/available")
+def deptment_exists(db:database_dependency,dept:str):
+    result=DeptCrud.dept_exists(db,dept)
+    if not result:
+        return {"exists":False}
+    return {"exists":True}
+
 enterprise_router.include_router(employee_router)
+enterprise_router.include_router(department_router)
 enterprise_router.include_router(secure_router)
 app.include_router(enterprise_router)

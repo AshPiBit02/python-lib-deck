@@ -117,7 +117,6 @@ def update_department_salary(db:Session,department:str,percentage:float):
     for emp in emps:
         emp.salary=factory*emp.salary
     db.commit()
-    db.refresh(emps)
     return {
         "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
         "updated_ids":[emp.id for emp in emps]}
