@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department
+from models import Employee,Department,HLOrder
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -104,4 +104,10 @@ def get_active_employee_list(db:Session):
     emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
     return emps
 
+def get_employee_by_salary_order(db:Session,order:HLOrder):
+    if order==HLOrder.high_to_low:
+        emps=db.query(Employee).order_by(Employee.salary.desc()).all()
+    else:
+        emps=db.query(Employee).order_by(Employee.salary.asc()).all()
+    return emps
 

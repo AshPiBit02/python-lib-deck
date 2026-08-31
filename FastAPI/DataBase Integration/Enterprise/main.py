@@ -5,7 +5,7 @@ from typing import Annotated
 import crud.empCrud as EmpCrud
 import crud.deptCrud as DeptCrud
 import crud.combinedCrud as CombinedCrud
-from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,BudgetOrder
+from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,HLOrder
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -133,6 +133,13 @@ def update_salary_by_department(db:database_dependency,department:str,percentage
     result=CombinedCrud.update_department_salary(db,department,percentage)
     return result
 
+@employee_router.get("/view/BySalaryOrder",response_model=list[EmpResponse])
+def view_employee_by_salary_order(db:database_dependency,order:HLOrder=Query(default=HLOrder.high_to_low)):
+    emps=EmpCrud.get_employee_by_salary_order(db,order)
+    if not emps:
+        raise HTTPException(status_code=404,detail="No employees exists. Please add departments first.")
+    return emps
+
 # Department Routers
 @department_router.get("/view/available")
 def department_exists(db:database_dependency,dept:str):
@@ -212,11 +219,11 @@ def view_department_budget(db:database_dependency,department:str):
         raise HTTPException(status_code=404,detail=f"No department found with name '{department}'")
     return {"Budget":f"${budget}"}
 
-@department_router.get("/view/department/ByBudgetOrder",response_model=list[DeptResponse])
-def view_department_by_budget_order(db:database_dependency,order:BudgetOrder=Query(default=BudgetOrder.high_to_low)):
+@department_router.get("/view/ByBudgetOrder",response_model=list[DeptResponse])
+def view_department_by_budget_order(db:database_dependency,order:HLOrder=Query(default=HLOrder.high_to_low)):
     depts=DeptCrud.get_department_by_budget_order(db,order)
     if not depts:
-        raise HTTPException(status_code=404,detail="No department names found. Please add departments first.")
+        raise HTTPException(status_code=404,detail="No department exists. Please add departments first.")
     return depts
 
     

@@ -1,6 +1,6 @@
 from enum import Enum
 
-class BudgetOrder(str,Enum):
+class HLOrder(str,Enum):
     high_to_low="HighToLow"
     low_to_high="LowToHigh"
 
