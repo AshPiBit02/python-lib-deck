@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department,HLOrder
+from models import Employee,Department,HLOrder,ExtremeValue
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -73,3 +73,10 @@ def remove_department(db:Session,dept_id:int):
         "success":True,
         "message":f"Department with id {dept_id}({dept.name}) deleted successfully!"
     }
+
+def get_extreme_budget_department(db:Session,extreme:ExtremeValue):
+    if extreme==ExtremeValue.highest:
+        dept=db.query(Department).order_by(Department.budget.desc()).first()
+    else:
+        dept=db.query(Department).order_by(Department.budget.asc()).first()
+    return dept

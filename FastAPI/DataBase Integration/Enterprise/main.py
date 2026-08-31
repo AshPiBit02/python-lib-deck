@@ -5,7 +5,7 @@ from typing import Annotated
 import crud.empCrud as EmpCrud
 import crud.deptCrud as DeptCrud
 import crud.combinedCrud as CombinedCrud
-from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,HLOrder
+from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,HLOrder,ExtremeValue
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -233,8 +233,13 @@ def delete_department(db:database_dependency,dept_id:int):
         raise HTTPException(status_code=result["code"],detail=result["error"])
     return {"message":result["message"]}
 
+@department_router.get("/view/ExtremeBudget",response_model=DeptResponse)
+def view_extreme_budget_deparment(db:database_dependency,extreme:ExtremeValue=Query(default=ExtremeValue.highest)):
+    result=DeptCrud.get_extreme_budget_department(db,extreme)
+    if not result:
+        raise HTTPException(status_code=404,detail="No department exists!")
+    return result
 
-    
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
 enterprise_router.include_router(secure_employee_router)
