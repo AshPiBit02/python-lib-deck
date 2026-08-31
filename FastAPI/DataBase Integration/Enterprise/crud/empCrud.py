@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department,HLOrder
+from models import Employee,Department,HLOrder,ExtremeValue
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -111,3 +111,9 @@ def get_employee_by_salary_order(db:Session,order:HLOrder):
         emps=db.query(Employee).order_by(Employee.salary.asc()).all()
     return emps
 
+def get_extreme_salary_employee(db:Session,extreme:ExtremeValue):
+    if extreme==ExtremeValue.highest:
+        emp=db.query(Employee).order_by(Employee.salary.desc()).first()
+    else:
+        emp=db.query(Employee).order_by(Employee.salary.asc()).first()
+    return emp

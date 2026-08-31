@@ -140,6 +140,13 @@ def view_employee_by_salary_order(db:database_dependency,order:HLOrder=Query(def
         raise HTTPException(status_code=404,detail="No employees exists. Please add departments first.")
     return emps
 
+@employee_router.get("/view/ExtremeSalary",response_model=EmpResponse)
+def view_extreme_salary_emplyee(db:database_dependency,extreme:ExtremeValue):
+    emp=EmpCrud.get_extreme_salary_employee(db,extreme)
+    if not emp:
+        raise HTTPException(status_code=404,detail=f"No employee exits!")
+    return emp
+
 # Department Routers
 @department_router.get("/view/available")
 def department_exists(db:database_dependency,dept:str):
