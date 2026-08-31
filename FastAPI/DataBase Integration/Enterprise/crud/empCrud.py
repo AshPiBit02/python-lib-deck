@@ -28,14 +28,7 @@ def add_new_employee(db:Session,emp:Employee):
 def search_employee_by_key(db:Session,key:str):
     emps=db.query(Employee).filter(Employee.full_name.ilike(f"%{key}%")).all()
     return emps
-def get_employee_by_dept(db: Session, dept: str):
-    return (
-        db.query(Employee)
-        .join(Department, Employee.department_id == Department.id)
-        .filter(func.lower(Department.name) == dept.lower())
-        .order_by(Employee.id.asc())
-        .all()
-    )
+
 
 def get_employee_by_salary_range(db:Session,min:float,max:float):
     emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).order_by(Employee.id.asc()).all()
@@ -111,16 +104,4 @@ def get_active_employee_list(db:Session):
     emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
     return emps
 
-def update_department_salary(db:Session,department:str,percentage:float):
-    change="increased" if percentage>0 else "decreased"
-    emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
-    if not emps:
-        return {"message",f"No employees found in department '{department}'"}
-    factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
-    for emp in emps:
-        emp.salary=factory*emp.salary
-    db.commit()
-    return {
-        "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
-        "updated_ids":[emp.id for emp in emps]}
-    
+
