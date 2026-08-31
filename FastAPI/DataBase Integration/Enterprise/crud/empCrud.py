@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department
+from models import Employee,Department,HLOrder,ExtremeValue
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -28,14 +28,7 @@ def add_new_employee(db:Session,emp:Employee):
 def search_employee_by_key(db:Session,key:str):
     emps=db.query(Employee).filter(Employee.full_name.ilike(f"%{key}%")).all()
     return emps
-def get_employee_by_dept(db: Session, dept: str):
-    return (
-        db.query(Employee)
-        .join(Department, Employee.department_id == Department.id)
-        .filter(func.lower(Department.name) == dept.lower())
-        .order_by(Employee.id.asc())
-        .all()
-    )
+
 
 def get_employee_by_salary_range(db:Session,min:float,max:float):
     emp=db.query(Employee).filter(Employee.salary>=min,Employee.salary<=max).order_by(Employee.id.asc()).all()
@@ -77,7 +70,7 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
 def remove_employee(db:Session,emp_id:int):
     emp=get_employees_by_id(db,emp_id)
     if not emp:
-        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+        return {"success":False,"error":f"Employee with id {emp_id} doesn't exists!"}
     db.delete(emp)
     db.commit()
     return{
@@ -111,16 +104,16 @@ def get_active_employee_list(db:Session):
     emps=db.query(Employee).filter(Employee.is_active).order_by(Employee.id.asc()).all()
     return emps
 
-def update_department_salary(db:Session,department:str,percentage:float):
-    change="increased" if percentage>0 else "decreased"
-    emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
-    if not emps:
-        return {"message",f"No employees found in department '{department}'"}
-    factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
-    for emp in emps:
-        emp.salary=factory*emp.salary
-    db.commit()
-    return {
-        "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
-        "updated_ids":[emp.id for emp in emps]}
-    
+def get_employee_by_salary_order(db:Session,order:HLOrder):
+    if order==HLOrder.high_to_low:
+        emps=db.query(Employee).order_by(Employee.salary.desc()).all()
+    else:
+        emps=db.query(Employee).order_by(Employee.salary.asc()).all()
+    return emps
+
+def get_extreme_salary_employee(db:Session,extreme:ExtremeValue):
+    if extreme==ExtremeValue.highest:
+        emp=db.query(Employee).order_by(Employee.salary.desc()).first()
+    else:
+        emp=db.query(Employee).order_by(Employee.salary.asc()).first()
+    return emp

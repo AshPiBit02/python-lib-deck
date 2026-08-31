@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department
+from models import Employee,Department,HLOrder,ExtremeValue
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -43,4 +43,40 @@ def update_department(db:Session,dept_id:int,updated_department:Department):
         dept.budget=updated_department.budget
     db.commit()
     db.refresh(dept)
+    return dept
+
+def get_paged_department(db:Session,skip:int,limit:int):
+    depts=db.query(Department).order_by(Department.id.asc()).offset(skip).limit(limit).all()
+    return depts
+
+def get_budget_by_department(db:Session,dept:str):
+    budget=db.query(Department.budget).filter(func.lower(Department.name)==dept.lower()).scalar()
+    return budget
+
+def get_department_by_budget_order(db:Session,order:HLOrder):
+    if order==HLOrder.high_to_low:
+        depts=db.query(Department).order_by(Department.budget.desc()).all()
+    else:
+        depts=db.query(Department).order_by(Department.budget.asc()).all()
+    return depts
+
+def remove_department(db:Session,dept_id:int):
+    dept=dept_by_id(db,dept_id)
+    if not dept:
+        return {"success":False,"code":400,"error":f"Department with id {dept_id} doesn't exists!"}
+    dept_exists_in_employee=db.query(Employee).filter(Employee.department_id==dept_id).count()>0
+    if dept_exists_in_employee:
+        return {"success":False,"code":403,"error":f"Deletion forbidden: '{dept.name}' department is currently referenced by one or more employees and cannot be removed."}
+    db.delete(dept)
+    db.commit()
+    return {
+        "success":True,
+        "message":f"Department with id {dept_id}({dept.name}) deleted successfully!"
+    }
+
+def get_extreme_budget_department(db:Session,extreme:ExtremeValue):
+    if extreme==ExtremeValue.highest:
+        dept=db.query(Department).order_by(Department.budget.desc()).first()
+    else:
+        dept=db.query(Department).order_by(Department.budget.asc()).first()
     return dept
