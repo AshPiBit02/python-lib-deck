@@ -1,11 +1,11 @@
-from fastapi import FastAPI,Depends,HTTPException,APIRouter,Header
+from fastapi import FastAPI,Depends,HTTPException,APIRouter,Header,Query
 from sqlalchemy.orm import Session
 from db.database import get_db
 from typing import Annotated
 import crud.empCrud as EmpCrud
 import crud.deptCrud as DeptCrud
 import crud.combinedCrud as CombinedCrud
-from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate
+from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,BudgetOrder
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -213,7 +213,7 @@ def view_department_budget(db:database_dependency,department:str):
     return {"Budget":f"${budget}"}
 
 @department_router.get("/view/department/ByBudgetOrder",response_model=list[DeptResponse])
-def view_department_by_budget_order(db:database_dependency,order:str="HighToLow"|"LowToHigh"):
+def view_department_by_budget_order(db:database_dependency,order:BudgetOrder=Query(default=BudgetOrder.high_to_low)):
     depts=DeptCrud.get_department_by_budget_order(db,order)
     if not depts:
         raise HTTPException(status_code=404,detail="No department names found. Please add departments first.")

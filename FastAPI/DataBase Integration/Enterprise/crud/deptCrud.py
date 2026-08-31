@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department
+from models import Employee,Department,BudgetOrder
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -53,8 +53,8 @@ def get_budget_by_department(db:Session,dept:str):
     budget=db.query(Department.budget).filter(func.lower(Department.name)==dept.lower()).scalar()
     return budget
 
-def get_department_by_budget_order(db:Session,order:str):
-    if order.lower()=="hightolow":
+def get_department_by_budget_order(db:Session,order:BudgetOrder):
+    if order==BudgetOrder.high_to_low:
         depts=db.query(Department).order_by(Department.budget.desc()).all()
     else:
         depts=db.query(Department).order_by(Department.budget.asc()).all()
