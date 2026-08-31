@@ -204,6 +204,13 @@ def view_paged_department(db:database_dependency,skip:int=0,limit:int=10):
     if not results:
         raise HTTPException(status_code=404, detail=f"No departments found with offset {skip} and limit {limit}.")
     return results
+
+@department_router.get("/view/budget")
+def view_department_budget(db:database_dependency,department:str):
+    budget=DeptCrud.get_budget_by_department(db,department)
+    if not budget:
+        raise HTTPException(status_code=404,detail=f"No department found with name '{department}'")
+    return {"Budget":f"${budget}"}
     
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)

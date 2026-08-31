@@ -46,3 +46,4 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
         "message": f"Changed department of employee with id {emp_id} "
                    f"from {old_department_id} to {new_dept_id}"
     }
+
