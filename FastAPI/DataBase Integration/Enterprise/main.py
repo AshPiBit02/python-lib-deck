@@ -24,6 +24,8 @@ def key_validation(key:str=Header(...)):
 # Employee routers
 
 secure_employee_router=APIRouter(prefix="/employee",dependencies=[Depends(key_validation)])
+secure_enterprise_router=APIRouter(prefix="/enterprise",dependencies=[Depends(key_validation)])
+secure_department_router=APIRouter(prefix="/department",dependencies=[Depends(key_validation)])
 
 @employee_router.get("/view/list",response_model=list[EmpResponse])
 def employee_list(db:database_dependency):
@@ -56,7 +58,7 @@ def add_employee(db: database_dependency, emp: EmpAdd):
         else:
             raise HTTPException(status_code=400, detail="Database error")
 
-@employee_router.get("/view/department/{department}",response_model=list[EmpResponse])
+@enterprise_router.get("/view/department/{department}",response_model=list[EmpResponse])
 def employee_by_dept(db:database_dependency,department:str):
     emp=CombinedCrud.get_employee_by_dept(db,department)
     if not emp:
@@ -91,7 +93,7 @@ def paged_employee(db:database_dependency,skip:int=0,limit:int=10):
         raise HTTPException(status_code=404, detail=f"No departments found with offset {skip} and limit {limit}.")
     return emp
 
-@secure_employee_router.patch("/update/department")
+@secure_enterprise_router.patch("/update/EmployeeDepartment")
 def update_employee_department(db:database_dependency,emp_id:int,new_department:str):
     result=CombinedCrud.change_employee_department(db,emp_id,new_department)
     if not result["success"]:
@@ -126,7 +128,7 @@ def active_employee_list(db:database_dependency):
         raise HTTPException(status_code=404,detail="No active employee found!")
     return result
 
-@secure_employee_router.patch("/update/salary/department")
+@secure_enterprise_router.patch("/update/EmployeeSalary/ByDepartment")
 def update_salary_by_department(db:database_dependency,department:str,percentage:float):
     result=CombinedCrud.update_department_salary(db,department,percentage)
     return result
@@ -160,7 +162,6 @@ def get_department_name_list(db:database_dependency):
         raise HTTPException(status_code=404,detail="No department names found. Please add departments frist.")
     return {"Departments":depts}
 
-secure_department_router=APIRouter(prefix="/department",dependencies=[Depends(key_validation)])
 
 @department_router.get("/view/search/nameKey",response_model=list[DeptResponse])
 def search_department_by_key(db:database_dependency,key:str):
