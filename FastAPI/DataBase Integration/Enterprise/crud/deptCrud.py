@@ -44,3 +44,6 @@ def update_department(db:Session,dept_id:int,updated_department:Department):
     db.commit()
     db.refresh(dept)
     return dept
+
+def get_paged_department(db:Session,skip:int,limit:int):
+    depts=db.query(Department).order_by(Department.id.asc()).offset(skip).limit(limit).all()

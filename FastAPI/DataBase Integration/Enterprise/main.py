@@ -195,6 +195,13 @@ def update_department(db:database_dependency,dept_id:int,dept:DeptUpdate):
             raise HTTPException(status_code=400, detail="Duplicate department not allowed")
         else:
             raise HTTPException(status_code=400, detail="Database error")
+
+@department_router.get("/view/pagedDeparment",response_model=list[DeptResponse])
+def view_paged_department(db:database_dependency,skip:int=0,limit:int=10):
+    results=DeptCrud.get_paged_department(db,skip,limit)
+    if not results:
+        raise HTTPException(status_code=404,detail=f"No employee found in page {skip} with limit {limit}!")
+    return results
     
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
