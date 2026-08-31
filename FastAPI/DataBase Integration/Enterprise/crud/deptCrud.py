@@ -59,3 +59,17 @@ def get_department_by_budget_order(db:Session,order:HLOrder):
     else:
         depts=db.query(Department).order_by(Department.budget.asc()).all()
     return depts
+
+def remove_department(db:Session,dept_id:int):
+    dept=dept_by_id(db,dept_id)
+    if not dept:
+        return {"success":False,"code":400,"error":f"Department with id {dept_id} doesn't exists!"}
+    dept_exists_in_employee=db.query(Employee).filter(Employee.department_id==dept_id).count()>0
+    if dept_exists_in_employee:
+        return {"success":False,"code":403,"error":f"Deletion forbidden: '{dept.name}' department is currently referenced by one or more employees and cannot be removed."}
+    db.delete(dept)
+    db.commit()
+    return {
+        "success":True,
+        "message":f"Department with id {dept_id}({dept.name}) deleted successfully!"
+    }

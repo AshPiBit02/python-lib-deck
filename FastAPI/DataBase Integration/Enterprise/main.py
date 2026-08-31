@@ -100,7 +100,7 @@ def update_employee_department(db:database_dependency,emp_id:int,new_department:
         raise HTTPException(status_code=400,detail=result["error"])
     return {"message":result["message"]}
 
-@secure_employee_router.delete("/delete/employee")
+@secure_employee_router.delete("/delete/ByEmployeeID")
 def delete_employee(db:database_dependency,emp_id:int):
     result=EmpCrud.remove_employee(db,emp_id)
     if not result["success"]:
@@ -225,6 +225,14 @@ def view_department_by_budget_order(db:database_dependency,order:HLOrder=Query(d
     if not depts:
         raise HTTPException(status_code=404,detail="No department exists. Please add departments first.")
     return depts
+
+@secure_department_router.delete("/remove/ByID")
+def delete_department(db:database_dependency,dept_id:int):
+    result=DeptCrud.remove_department(db,dept_id)
+    if not result["success"]:
+        raise HTTPException(status_code=result["code"],detail=result["error"])
+    return {"message":result["message"]}
+
 
     
 enterprise_router.include_router(employee_router)

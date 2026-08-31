@@ -70,7 +70,7 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
 def remove_employee(db:Session,emp_id:int):
     emp=get_employees_by_id(db,emp_id)
     if not emp:
-        return {"success":False,"error":f"Employee with id {emp_id} not found!"}
+        return {"success":False,"error":f"Employee with id {emp_id} doesn't exists!"}
     db.delete(emp)
     db.commit()
     return{
