@@ -4,7 +4,7 @@ from db.database import get_db
 from typing import Annotated
 import crud.empCrud as Empcrud
 import crud.deptCrud as DeptCrud
-from BaseModels import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate
+from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -84,10 +84,10 @@ def update_employee_salary(db:database_dependency,emp_id:int,new_salary:float):
     return result
 
 @employee_router.get("/view/page",response_model=list[EmpResponse])
-def paged_employee(db:database_dependency,skip:int,limit:int):
+def paged_employee(db:database_dependency,skip:int=0,limit:int=10):
     emp=Empcrud.get_paged_employees(db,skip,limit)
     if not emp:
-        raise HTTPException(status_code=404,detail="No employee found!")
+        raise HTTPException(status_code=404, detail=f"No departments found with offset {skip} and limit {limit}.")
     return emp
 
 @secure_employee_router.patch("/update/department")
@@ -200,7 +200,7 @@ def update_department(db:database_dependency,dept_id:int,dept:DeptUpdate):
 def view_paged_department(db:database_dependency,skip:int=0,limit:int=10):
     results=DeptCrud.get_paged_department(db,skip,limit)
     if not results:
-        raise HTTPException(status_code=404,detail=f"No employee found in page {skip} with limit {limit}!")
+        raise HTTPException(status_code=404, detail=f"No departments found with offset {skip} and limit {limit}.")
     return results
     
 enterprise_router.include_router(employee_router)
