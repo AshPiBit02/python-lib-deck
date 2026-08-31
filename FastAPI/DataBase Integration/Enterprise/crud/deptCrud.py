@@ -52,3 +52,10 @@ def get_paged_department(db:Session,skip:int,limit:int):
 def get_budget_by_department(db:Session,dept:str):
     budget=db.query(Department.budget).filter(func.lower(Department.name)==dept.lower()).scalar()
     return budget
+
+def get_department_by_budget_order(db:Session,order:str):
+    if order.lower()=="hightolow":
+        depts=db.query(Department).order_by(Department.budget.desc()).all()
+    else:
+        depts=db.query(Department).order_by(Department.budget.asc()).all()
+    return depts

@@ -159,7 +159,7 @@ def get_department_detailed_list(db:database_dependency):
 def get_department_name_list(db:database_dependency):
     depts=DeptCrud.dept_name_list(db)
     if not depts:
-        raise HTTPException(status_code=404,detail="No department names found. Please add departments frist.")
+        raise HTTPException(status_code=404,detail="No department names found. Please add departments first.")
     return {"Departments":depts}
 
 
@@ -211,6 +211,14 @@ def view_department_budget(db:database_dependency,department:str):
     if not budget:
         raise HTTPException(status_code=404,detail=f"No department found with name '{department}'")
     return {"Budget":f"${budget}"}
+
+@department_router.get("/view/department/ByBudgetOrder",response_model=list[DeptResponse])
+def view_department_by_budget_order(db:database_dependency,order:str="HighToLow"|"LowToHigh"):
+    depts=DeptCrud.get_department_by_budget_order(db,order)
+    if not depts:
+        raise HTTPException(status_code=404,detail="No department names found. Please add departments first.")
+    return depts
+
     
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
