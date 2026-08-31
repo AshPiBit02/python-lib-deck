@@ -17,7 +17,7 @@ def update_department_salary(db:Session,department:str,percentage:float):
     change="increased" if percentage>0 else "decreased"
     emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
     if not emps:
-        return {"message",f"No employees found in department '{department}'"}
+        return {"message":f"No employees found in department '{department}'"}
     factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
     for emp in emps:
         emp.salary=factory*emp.salary
