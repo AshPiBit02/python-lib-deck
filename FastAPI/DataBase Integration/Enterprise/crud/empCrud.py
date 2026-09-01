@@ -130,5 +130,5 @@ def replace_employee(db:Session,emp_id:int,updated_emp:EmpAdd):
     emp.department_id=updated_emp.department_id
     db.commit()
     db.refresh(emp)
-    return {"message": f"Department {emp_id} replaced successfully.", "data": emp}
+    return {"message": f"Employee {emp_id} replaced successfully.", "data": emp}
     
