@@ -5,7 +5,7 @@ from typing import Annotated
 import crud.empCrud as EmpCrud
 import crud.deptCrud as DeptCrud
 import crud.combinedCrud as CombinedCrud
-from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,HLOrder,ExtremeValue
+from models import EmpResponse,EmpAdd,EmpAddResponse,EmpSalaryResponse,DeptResponse,DeptAddResponse,DeptAdd,DeptUpdate,HLOrder,ExtremeValue,AggFunc
 from sqlalchemy.exc import IntegrityError
 from core.config import settings
 
@@ -248,8 +248,8 @@ def view_extreme_budget_deparment(db:database_dependency,extreme:ExtremeValue=Qu
     return result
 
 @employee_router.get("/view/Salary/ByDepartmentGroup")
-def view_employee_salary_by_department(db:database_dependency):
-    results=CombinedCrud.total_salary_per_department(db)
+def view_employee_salary_by_department(db:database_dependency,agg:AggFunc=Query(default=AggFunc.total)):
+    results=CombinedCrud.total_salary_per_department(db,agg)
     if not results:
         raise HTTPException(status_code=404,detail="No emplyee exists!")
     return results 

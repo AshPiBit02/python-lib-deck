@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department
+from models import Employee,Department,AggFunc
 from crud.empCrud import get_employees_by_id
 from sqlalchemy import func
 from decimal import Decimal
@@ -47,12 +47,19 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
                    f"from {old_department_id} to {new_dept_id}"
     }
 
-def total_salary_per_department(db:Session):
+def total_salary_per_department(db:Session,agg:AggFunc):
+    if agg==AggFunc.total:
+        func_to_use=func.sum
+        salary_type="total_salary"
+    else:
+        func_to_use=func.avg
+        salary_type="average_salary"
     results=(
-        db.query(Department.name,func.sum(Employee.salary).label("total_salary"))
+        db.query(Department.name,func_to_use(Employee.salary).label("total_salary"))
         .join(Employee,Department.id==Employee.department_id)
         .group_by(Department.id)
         .all()
     )
-    formatted=[{"department":name,"total_salary":total} for name,total in results]
+
+    formatted=[{"department":name,salary_type:salary} for name,salary in results]
     return formatted
