@@ -37,7 +37,7 @@ def employee_list(db:database_dependency):
 
 @employee_router.get("/view/id/{id}",response_model=EmpResponse)
 def employee_by_id(db:database_dependency,id:int):
-    emp=EmpCrud.get_employees_by_id(db,id)
+    emp=EmpCrud.get_employee_by_id(db,id)
     if emp is None:
         raise HTTPException(status_code=404,detail=f"Employee with id {id} not found!")
     return emp
@@ -57,6 +57,13 @@ def add_employee(db: database_dependency, emp: EmpAdd):
             raise HTTPException(status_code=400, detail="Missing required field")
         else:
             raise HTTPException(status_code=400, detail="Database error")
+
+@secure_employee_router.put("/replace")
+def replace_employee(db:database_dependency,emp_id:int,emp:EmpAdd):
+    result=EmpCrud.replace_employee(db,emp_id,emp)
+    if not result:
+        raise HTTPException(status_code=404,detail=f"Employee with id {emp_id} doesn't exists")
+    return result
 
 @enterprise_router.get("/view/department/{department}",response_model=list[EmpResponse])
 def employee_by_dept(db:database_dependency,department:str):

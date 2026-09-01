@@ -47,7 +47,7 @@ def update_employee_salary(db:Session,emp_id:int,new_salary:float):
     }
 
 def change_employee_department(db: Session, emp_id: int, new_department: str):
-    emp = get_employees_by_id(db,emp_id)
+    emp = get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error": f"Employee with id {emp_id} not found!"}
 
@@ -68,7 +68,7 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
     }
 
 def remove_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} doesn't exists!"}
     db.delete(emp)
@@ -79,7 +79,7 @@ def remove_employee(db:Session,emp_id:int):
     }
 
 def deactivate_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
     if not emp.is_active:
@@ -90,7 +90,7 @@ def deactivate_employee(db:Session,emp_id:int):
     return {"success":True,"message":f"Employee with id {emp_id} deactivated"}
 
 def reactivate_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
     if emp.is_active:
@@ -119,13 +119,16 @@ def get_extreme_salary_employee(db:Session,extreme:ExtremeValue):
     return emp
 
 def replace_employee(db:Session,emp_id:int,updated_emp:EmpAdd):
-    dept=dept_by_id(db,dept_id)
-    if not dept:
+    emp=get_employee_by_id(db,emp_id)
+    if not emp:
         return None
-    dept.name=updated_dept.name
-    dept.location=updated_dept.location
-    dept.budget=updated_dept.budget
+    emp.full_name=updated_emp.full_name
+    emp.email=updated_emp.email
+    emp.position=updated_emp.position
+    emp.salary=updated_emp.salary
+    emp.is_active=updated_emp.is_active
+    emp.department_id=updated_emp.department_id
     db.commit()
-    db.refresh(dept)
-    return {"message": f"Department {dept_id} replaced successfully.", "data": dept}
+    db.refresh(emp)
+    return {"message": f"Department {emp_id} replaced successfully.", "data": emp}
     
