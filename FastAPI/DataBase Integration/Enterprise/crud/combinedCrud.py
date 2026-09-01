@@ -47,3 +47,12 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
                    f"from {old_department_id} to {new_dept_id}"
     }
 
+def total_salary_per_department(db:Session):
+    results=(
+        db.query(Department.name,func.sum(Employee.salary).label("total_salary"))
+        .join(Employee,Department.id==Employee.department_id)
+        .group_by(Department.id)
+        .all()
+    )
+    formatted=[{"department":name,"total_salary":total} for name,total in results]
+    return formatted

@@ -247,6 +247,13 @@ def view_extreme_budget_deparment(db:database_dependency,extreme:ExtremeValue=Qu
         raise HTTPException(status_code=404,detail="No department exists!")
     return result
 
+@employee_router.get("/view/Salary/ByDepartmentGroup")
+def view_employee_salary_by_department(db:database_dependency):
+    results=CombinedCrud.total_salary_per_department(db)
+    if not results:
+        raise HTTPException(status_code=404,detail="No emplyee exists!")
+    return results 
+
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
 enterprise_router.include_router(secure_employee_router)
