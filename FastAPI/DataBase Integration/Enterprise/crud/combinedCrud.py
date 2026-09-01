@@ -4,23 +4,28 @@ from crud.empCrud import get_employee_by_id
 from sqlalchemy import func
 from decimal import Decimal
 
-def get_employees_by_dept(db: Session, dept: str):
-    department=db.query(Department).filter(func.lower(Department.name)==dept.lower()).first()
+def get_employees_by_dept(db: Session, dept_name: str):
+    department=db.query(Department).filter(func.lower(Department.name)==dept_name.lower()).first()
     if department is None:
         return []
     return department.employees
 
-def update_department_salary(db:Session,department:str,percentage:float):
+def update_department_salary(db:Session,dept_name:str,percentage:float):
     change="increased" if percentage>0 else "decreased"
-    emps=db.query(Employee).join(Department,Employee.department_id==Department.id).filter(func.lower(Department.name)==department.lower()).all()
+    department=db.query(Department).filter(func.lower(Department.name)==dept_name.lower()).first()
+    if department is None:
+        return {"message":f"No department exists with name '{dept_name}'"}
+    emps=department.employees
     if not emps:
-        return {"message":f"No employees found in department '{department}'"}
+        return {"message":f"No employees found in department '{dept_name}'"}
     factory=Decimal(1)+(Decimal(percentage)/Decimal(100))
     for emp in emps:
         emp.salary=factory*emp.salary
     db.commit()
+    for emp in emps:
+        db.refresh(emp)
     return {
-        "message":f"Salaries of employees in department {department} {change} by {abs(percentage)}%.",
+        "message":f"Salaries of employees in department {dept_name} {change} by {abs(percentage)}%.",
         "updated_ids":[emp.id for emp in emps]}
 
 def change_employee_department(db: Session, emp_id: int, new_department: str):
