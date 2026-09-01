@@ -8,3 +8,8 @@ class ExtremeValue(str,Enum):
     highest="Highest"
     lowest="Lowest"
 
+class AggFunc(str,Enum):
+    avg="Average"
+    total="Total"
+
+

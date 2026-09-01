@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department,HLOrder,ExtremeValue
+from models import Employee,Department,HLOrder,ExtremeValue,EmpAdd
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -15,10 +15,10 @@ def get_employees(db:Session):
 def get_paged_employees(db:Session,skip:int,limit:int):
     return db.query(Employee).order_by(Employee.id.asc()).offset(skip).limit(limit).all()
 
-def get_employees_by_id(db:Session,emp_id:int):
+def get_employee_by_id(db:Session,emp_id:int):
     return db.query(Employee).filter(Employee.id==emp_id).first()
 
-def add_new_employee(db:Session,emp:Employee):
+def add_new_employee(db:Session,emp:EmpAdd):
     new_emp=Employee(full_name=emp.full_name,email=emp.email,position=emp.position,salary=emp.salary,is_active=emp.is_active,department_id=emp.department_id)
     db.add(new_emp)
     db.commit()
@@ -47,7 +47,7 @@ def update_employee_salary(db:Session,emp_id:int,new_salary:float):
     }
 
 def change_employee_department(db: Session, emp_id: int, new_department: str):
-    emp = get_employees_by_id(db,emp_id)
+    emp = get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error": f"Employee with id {emp_id} not found!"}
 
@@ -68,7 +68,7 @@ def change_employee_department(db: Session, emp_id: int, new_department: str):
     }
 
 def remove_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} doesn't exists!"}
     db.delete(emp)
@@ -79,7 +79,7 @@ def remove_employee(db:Session,emp_id:int):
     }
 
 def deactivate_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
     if not emp.is_active:
@@ -90,7 +90,7 @@ def deactivate_employee(db:Session,emp_id:int):
     return {"success":True,"message":f"Employee with id {emp_id} deactivated"}
 
 def reactivate_employee(db:Session,emp_id:int):
-    emp=get_employees_by_id(db,emp_id)
+    emp=get_employee_by_id(db,emp_id)
     if not emp:
         return {"success":False,"error":f"Employee with id {emp_id} not found!"}
     if emp.is_active:
@@ -117,3 +117,18 @@ def get_extreme_salary_employee(db:Session,extreme:ExtremeValue):
     else:
         emp=db.query(Employee).order_by(Employee.salary.asc()).first()
     return emp
+
+def replace_employee(db:Session,emp_id:int,updated_emp:EmpAdd):
+    emp=get_employee_by_id(db,emp_id)
+    if not emp:
+        return None
+    emp.full_name=updated_emp.full_name
+    emp.email=updated_emp.email
+    emp.position=updated_emp.position
+    emp.salary=updated_emp.salary
+    emp.is_active=updated_emp.is_active
+    emp.department_id=updated_emp.department_id
+    db.commit()
+    db.refresh(emp)
+    return {"message": f"Employee {emp_id} replaced successfully.", "data": emp}
+    
