@@ -65,9 +65,9 @@ def replace_employee(db:database_dependency,emp_id:int,emp:EmpAdd):
         raise HTTPException(status_code=404,detail=f"Employee with id {emp_id} doesn't exists")
     return result
 
-@enterprise_router.get("/view/department/{department}",response_model=list[EmpResponse])
+@enterprise_router.get("/view/ByDepartment/{department}",response_model=list[EmpResponse])
 def employee_by_dept(db:database_dependency,department:str):
-    emp=CombinedCrud.get_employee_by_dept(db,department)
+    emp=CombinedCrud.get_employees_by_dept(db,department)
     if not emp:
         raise HTTPException(status_code=404,detail=f"No employee found in {department} department")
     return emp

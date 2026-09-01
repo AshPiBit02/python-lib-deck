@@ -4,14 +4,11 @@ from crud.empCrud import get_employee_by_id
 from sqlalchemy import func
 from decimal import Decimal
 
-def get_employee_by_dept(db: Session, dept: str):
-    return (
-        db.query(Employee)
-        .join(Department, Employee.department_id == Department.id)
-        .filter(func.lower(Department.name) == dept.lower())
-        .order_by(Employee.id.asc())
-        .all()
-    )
+def get_employees_by_dept(db: Session, dept: str):
+    department=db.query(Department).filter(func.lower(Department.name)==dept.lower()).first()
+    if department is None:
+        return []
+    return department.employees
 
 def update_department_salary(db:Session,department:str,percentage:float):
     change="increased" if percentage>0 else "decreased"

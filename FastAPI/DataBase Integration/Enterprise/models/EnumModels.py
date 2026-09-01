@@ -12,3 +12,4 @@ class AggFunc(str,Enum):
     avg="Average"
     total="Total"
 
+
