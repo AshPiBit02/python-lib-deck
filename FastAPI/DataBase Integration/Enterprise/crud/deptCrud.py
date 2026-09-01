@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Employee,Department,HLOrder,ExtremeValue
+from models import Employee,Department,HLOrder,ExtremeValue,DeptAdd
 from sqlalchemy import func
 from decimal import Decimal
 
@@ -80,3 +80,15 @@ def get_extreme_budget_department(db:Session,extreme:ExtremeValue):
     else:
         dept=db.query(Department).order_by(Department.budget.asc()).first()
     return dept
+
+def replace_department(db:Session,dept_id:int,updated_dept:DeptAdd):
+    dept=dept_by_id(db,dept_id)
+    if not dept:
+        return None
+    dept.name=updated_dept.name
+    dept.location=updated_dept.location
+    dept.budget=updated_dept.budget
+    db.commit()
+    db.refresh(dept)
+    return {"message": f"Department {dept_id} replaced successfully.", "data": dept}
+    

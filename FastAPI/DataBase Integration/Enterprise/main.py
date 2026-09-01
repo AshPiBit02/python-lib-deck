@@ -198,6 +198,13 @@ def add_new_department(db:database_dependency,new_dept:DeptAdd):
             raise HTTPException(status_code=400, detail="Missing required field")
         else:
             raise HTTPException(status_code=400, detail="Database error")
+        
+@secure_department_router.put("/replace")
+def replace_department(db:database_dependency,dept_id:int,dept:DeptAdd):
+    result=DeptCrud.replace_department(db,dept_id,dept)
+    if not result:
+        raise HTTPException(status_code=404,detail=f"Department with id {dept_id} doesn't exists")
+    return result
 
 @secure_department_router.patch("/update",response_model=DeptResponse)
 def update_department(db:database_dependency,dept_id:int,dept:DeptUpdate):
@@ -252,7 +259,7 @@ def view_employee_salary_by_department(db:database_dependency,agg:AggFunc=Query(
     results=CombinedCrud.total_salary_per_department(db,agg)
     if not results:
         raise HTTPException(status_code=404,detail="No emplyee exists!")
-    return results 
+    return results
 
 enterprise_router.include_router(employee_router)
 enterprise_router.include_router(department_router)
