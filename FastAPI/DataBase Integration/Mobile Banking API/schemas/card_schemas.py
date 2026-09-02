@@ -4,7 +4,7 @@ from typing import Optional
 
 class CardBase(BaseModel):
     card_number:str=Field(...,min_length=16,max_length=16)
-    expiry_date:date
+    expiry_date:str=Field(...,min_length=7,max_length=7)
 
 class CardCreate(CardBase):
     account_id:int=Field(...)
@@ -18,14 +18,4 @@ class CardResponse(BaseModel):
     expiry_date:str
     is_active:bool
     model_config=ConfigDict(from_attributes=True)
-
-    @classmethod
-    def from_orm(cls, obj):
-        expiry_str=obj.expiry_date.strftime("%m/%y")
-        return cls(
-            id=obj.id,
-            card_number=obj.card_number,
-            expiry_date=expiry_str,
-            is_active=obj.is_active
-                   )
 

@@ -20,6 +20,6 @@ class AuditLogResponse(AuditLogBase):
 class AuditLogQuery(BaseModel):
     customer_id:Optional[int]=None
     status:Optional[LogStatus]=None
-    start_date=Optional[datetime]=None
-    end_date=Optional[datetime]=None
+    start_date:Optional[datetime]=None
+    end_date:Optional[datetime]=None
 

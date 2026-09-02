@@ -1,7 +1,7 @@
 from pydantic import BaseModel,Field,EmailStr,ConfigDict
 from datetime import datetime
 from typing import Optional,List
-from schemas import AccountResponse
+from schemas.account_schemas import AccountResponse
 
 class CustomerBase(BaseModel):
     full_name:str=Field(...,min_length=5)
