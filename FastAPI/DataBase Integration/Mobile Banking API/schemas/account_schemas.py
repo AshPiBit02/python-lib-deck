@@ -1,7 +1,8 @@
 from pydantic import BaseModel,Field,ConfigDict
 from datetime import datetime
-from typing import Optional
-from models import AccountType,OwnerRole,TransactionResponse
+from typing import Optional,List
+from models import AccountType,OwnerRole
+from schemas import TransactionResponse
 from decimal import Decimal
 class AccountBase(BaseModel):
     account_number:str=Field(...,min_length=20,max_length=20)
@@ -25,7 +26,7 @@ class AccountWithBalance(AccountResponse):
     balance:Decimal
 
 class AccountWithTransaction(AccountResponse):
-    transactions:list[TransactionResponse]
+    transactions:List[TransactionResponse]
 
 class JointOwnerAdd(BaseModel):
     customer_id:int
