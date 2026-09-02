@@ -3,6 +3,25 @@ from sqlalchemy import (
     )
 from sqlalchemy.orm import relationship
 from db.database import Base
+from enum import Enum
+
+class AccounType(str,Enum):
+    checking="Checking"
+    savings="Savings"
+
+class TransactionType(str,Enum):
+    deposit="Deposit"
+    withdrawal="Withdrawal"
+    transfer_in="Transfer_In"
+    transfer_out="Transfer_Out"
+
+class OwnerRole(str,Enum):
+    primary="Primary"
+    joint="Joint"
+
+class LogStatus(str,Enum):
+    success="Success"
+    failed="Failed"
 
 class Customer(Base):
     __tablename__="customers"
@@ -19,6 +38,11 @@ class Customer(Base):
     audit_logs=relationship("AuditLog",back_populates="customer")
 
 
+class Account(Base):
+    __tablename__="accounts"
+    id=Column(Integer,primary_key=True,index=True)
+    account_numer=Column(String(20),unique=True,nullable=False)
+    account_type=Column(SqlEnum(AccountType),nullable=False)
 
 
 
