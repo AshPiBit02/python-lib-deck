@@ -107,7 +107,7 @@ class AuditLog(Base):
     id=Column(Integer,primary_key=True,index=False)
     action=Column(String(100),nullable=False)
     customer_id=Column(Integer,ForeignKey("customers.id"),nullable=True) # nullable - system actions
-    details=Column(Text,name=True)
+    details=Column(Text,nullable=True)
     status=Column(Enum(LogStatus),nullable=False,default=LogStatus.success)
     created_at=Column(DateTime,server_default=func.now())
     customer=relationship("Customer",back_populates="audit_logs")
