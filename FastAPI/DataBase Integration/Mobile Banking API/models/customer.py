@@ -1,11 +1,11 @@
 from sqlalchemy import (
-    Column, Integer, String,Date,func,
+    Column, Integer, String,DateTime,func,ForeignKey,Numeric,Index
     )
 from sqlalchemy.orm import relationship
 from db.database import Base
 from enum import Enum
 
-class AccounType(str,Enum):
+class AccountType(str,Enum):
     checking="Checking"
     savings="Savings"
 
@@ -29,12 +29,15 @@ class Customer(Base):
     full_name=Column(String(150),nullable=False)
     email=Column(String(200),unique=True,nullable=False)
     phone=Column(String(15),nullable=True)
-    created_at=Column(Date,server_default=func.now())
+    created_at=Column(DateTime,server_default=func.now())
 
+    # One-to-Many: Customer->Account(as primary owner)
     accounts=relationship("Account",back_populates="primary_owner")
 
+    # Many-to-Many: Customer<->Account(joint ownership, via association table)
     joint_accounts=relationship("Account",secondary="account_customers",back_populates="joint_owners",viewonly=True)
 
+    # One-to-Many: Customer->AuditLog
     audit_logs=relationship("AuditLog",back_populates="customer")
 
 
@@ -42,8 +45,46 @@ class Account(Base):
     __tablename__="accounts"
     id=Column(Integer,primary_key=True,index=True)
     account_numer=Column(String(20),unique=True,nullable=False)
-    account_type=Column(SqlEnum(AccountType),nullable=False)
+    account_type=Column(Enum(AccountType),nullable=False)
+    customer_id=Column(Integer,ForeignKey("customers.id"),nullable=False)
+    created_at=Column(DateTime,server_default=func.now())
+
+    # Many-to-One: Account-> Customer(primary owner)
+    primary_owner=relationship("Customer",back_populates="accounts")
+
+    # One-to-Many: Account -> Transaction
+    transactions=relationship("Transaction",back_populates="account",cascade="all,delete-orphan")
+
+    # One-to-One: Account -> Card
+    card=relationship("Card",back_populates="account",uselist=False)
+
+    # Many-to-Many: Account <-> Customer (joint owners), via association table
+    joint_owners=relationship("Customer",secondary="account_customers",back_populates="joint_accounts",viewonly=True)
 
 
+class AccountCustomer(Base):
+    __tablename__="account_customers"
+    account_id=Column(Integer,ForeignKey("accounts.id"),primary_key=True)
+    customer_id=Column(Integer,ForeignKey("customer.id"),primary_key=True)
+    role=Column(Enum(OwnerRole),nullable=False,default=OwnerRole.joint)
 
-    
+class Transaction(Base):
+    __tablename__="transactions"
+    id=Column(Integer,primary_key=True,index=True)
+    account_id=Column(Integer,ForeignKey("accounts.id"),nullable=False)
+    amount=Column(Numeric(12,2),nullable=False)
+    type=Column(Enum(TransactionType),nullable=False)
+
+    # self-referencing FK
+    reversed_transaction_id=Column(Integer,ForeignKey("transactions.id"),nullable=True)
+
+    created_at=Column(DateTime,server_default=func.now())
+
+    # Many-to-One: Transaction -> Account
+    account=relationship("Account",back_populates="transactions")
+
+    # self-referencing relationship: this transaction's reversal target,
+    # and (reverse direction) any transaction that reversed THIS one
+    reversed_transaction=relationship("Transaction",remote_side=[id],backref="reversed_entries")
+
+    __table_args__=(Index("ix_txn_account_created","account_id","created_at"))
