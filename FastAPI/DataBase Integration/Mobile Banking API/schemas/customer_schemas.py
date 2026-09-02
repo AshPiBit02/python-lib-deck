@@ -1,6 +1,6 @@
 from pydantic import BaseModel,Field,EmailStr,ConfigDict
 from datetime import datetime
-from typing import Optional
+from typing import Optional,List
 from schemas import AccountResponse
 
 class CustomerBase(BaseModel):
@@ -11,7 +11,7 @@ class CustomerBase(BaseModel):
 class CustomerCreate(CustomerBase):
     pass
 
-class CustomerUpdate(CustomerBase):
+class CustomerUpdate(BaseModel):
     full_name:Optional[str]=Field(default=None,min_length=5)
     email:Optional[EmailStr]=None
     phone:Optional[str]=None
@@ -22,4 +22,4 @@ class CustomerResponse(CustomerBase):
     model_config=ConfigDict(from_attributes=True)
 
 class CustomerWithAccounts(CustomerResponse):
-    account_list:list[AccountResponse]
+    account_list:List[AccountResponse]
