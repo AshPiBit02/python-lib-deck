@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_host:str="localhost"
     db_port:str="5432"
     db_name:str
-    secret_key:str
+    PIN:str
 
     @property
     def database_url(self)->str:

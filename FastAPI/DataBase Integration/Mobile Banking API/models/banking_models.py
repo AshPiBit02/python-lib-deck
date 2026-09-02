@@ -3,24 +3,25 @@ from sqlalchemy import (
     Boolean,Text
     )
 from sqlalchemy.orm import relationship
+from sqlalchemy.types import Enum
 from db.database import Base
-from enum import Enum
+from enum import Enum as PyEnum
 
-class AccountType(str,Enum):
+class AccountType(str,PyEnum):
     checking="Checking"
     savings="Savings"
 
-class TransactionType(str,Enum):
+class TransactionType(str,PyEnum):
     deposit="Deposit"
     withdrawal="Withdrawal"
     transfer_in="Transfer_In"
     transfer_out="Transfer_Out"
 
-class OwnerRole(str,Enum):
+class OwnerRole(str,PyEnum):
     primary="Primary"
     joint="Joint"
 
-class LogStatus(str,Enum):
+class LogStatus(str,PyEnum):
     success="Success"
     failed="Failed"
 
@@ -66,7 +67,7 @@ class Account(Base):
 class AccountCustomer(Base):
     __tablename__="account_customers"
     account_id=Column(Integer,ForeignKey("accounts.id"),primary_key=True)
-    customer_id=Column(Integer,ForeignKey("customer.id"),primary_key=True)
+    customer_id=Column(Integer,ForeignKey("customers.id"),primary_key=True)
     role=Column(Enum(OwnerRole),nullable=False,default=OwnerRole.joint)
 
 class Transaction(Base):
@@ -88,7 +89,7 @@ class Transaction(Base):
     # and (reverse direction) any transaction that reversed THIS one
     reversed_transaction=relationship("Transaction",remote_side=[id],backref="reversed_entries")
 
-    __table_args__=(Index("ix_txn_account_created","account_id","created_at"))
+    __table_args__=(Index("ix_txn_account_created","account_id","created_at"),)
 
 
 class Card(Base):
