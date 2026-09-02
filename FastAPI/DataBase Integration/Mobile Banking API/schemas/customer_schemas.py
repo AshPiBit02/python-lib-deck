@@ -1,9 +1,10 @@
 from pydantic import BaseModel,Field,EmailStr,ConfigDict
 from datetime import datetime
 from typing import Optional
+from schemas import AccountResponse
 
 class CustomerBase(BaseModel):
-    full_name:str=Field(min_length=5)
+    full_name:str=Field(...,min_length=5)
     email:EmailStr
     phone:str
 

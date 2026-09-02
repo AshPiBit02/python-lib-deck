@@ -46,7 +46,7 @@ class Customer(Base):
 class Account(Base):
     __tablename__="accounts"
     id=Column(Integer,primary_key=True,index=True)
-    account_numer=Column(String(20),unique=True,nullable=False)
+    account_number=Column(String(20),unique=True,nullable=False)
     account_type=Column(Enum(AccountType),nullable=False)
     customer_id=Column(Integer,ForeignKey("customers.id"),nullable=False)
     created_at=Column(DateTime,server_default=func.now())
