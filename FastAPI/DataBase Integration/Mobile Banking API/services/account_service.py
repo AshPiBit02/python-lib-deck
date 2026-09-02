@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from models import Account,AccountCustomer,Customer,Transaction,OwnerRole
 from schemas import AccountCreate,AccountUpdate,JointOwnerAdd
-from services import
 
 class AccountService:
     def __init__(self,db:Session):
@@ -36,6 +35,25 @@ class AccountService:
         self.db.commit()
 
         # AuditService()
+        return account
+
+    def get_account_by_id(self,account_id:int)->Account|None:
+        return self.db.query(Account).filter(Account.id==account_id).first()
+
+    def get_account_by_number(self,account_number:str)->Account|None:
+        return self.db.query(Account).filter(Account.account_number==account_number).first()
+
+    def get_account_balance(self,account_id:int)->dict|None:
+        account=self.get_account_by_id(account_id)
+        if not account:
+            return None
+
+        balance=(
+            self.db.query(func.coalesce(func.sum(Transaction.amount),Decimal("0.00")))
+            .filter(Transaction.account_id==account_id)
+            .scalar()
+        )
+        account.balance=balance
         return account
 
     
