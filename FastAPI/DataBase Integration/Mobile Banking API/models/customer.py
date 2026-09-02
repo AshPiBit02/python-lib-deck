@@ -1,5 +1,6 @@
 from sqlalchemy import (
-    Column, Integer, String,DateTime,func,ForeignKey,Numeric,Index
+    Column, Integer, String,DateTime,func,ForeignKey,Numeric,Index,
+    Boolean,Text
     )
 from sqlalchemy.orm import relationship
 from db.database import Base
@@ -88,3 +89,24 @@ class Transaction(Base):
     reversed_transaction=relationship("Transaction",remote_side=[id],backref="reversed_entries")
 
     __table_args__=(Index("ix_txn_account_created","account_id","created_at"))
+
+
+class Card(Base):
+    __tablename__="cards"
+    id=Column(Integer,primary_key=True,index=True)
+    account_id=Column(Integer,ForeignKey("accounts.id"),unique=True,nullable=False)
+    card_number=Column(String(20),unique=True,nullable=False)
+    expiry_date=Column(String(7),nullable=False)
+    is_active=Column(Boolean,default=True)
+    account=relationship("Account",back_populates="card")
+
+
+class AuditLog(Base):
+    __tablename__="audit_logs"
+    id=Column(Integer,primary_key=True,index=False)
+    action=Column(String(100),nullable=False)
+    customer_id=Column(Integer,ForeignKey("customers.id"),nullable=True) # nullable - system actions
+    details=Column(Text,name=True)
+    status=Column(Enum(LogStatus),nullable=False,default=LogStatus.success)
+    created_at=Column(DateTime,server_default=func.now())
+    customer=relationship("Customer",back_populates="audit_logs")
