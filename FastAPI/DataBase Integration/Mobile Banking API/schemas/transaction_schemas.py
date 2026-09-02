@@ -4,24 +4,24 @@ from models import TransactionType
 from datetime import datetime
 
 class TransactionBase(BaseModel):
-    amount:Decimal
+    amount:Decimal=Field(gt=0)
     type:TransactionType
 
 class DepositRequest(TransactionBase):
-    account_id:int
-    amount:Decimal
+    account_id:int=Field(...)
+    amount:Decimal=Field(gt=0)
 
 class WithdrawRequest(TransactionBase):
-    account_id:int
-    amount:Decimal
+    account_id:int=Field(...)
+    amount:Decimal=Field(gt=0)
 
 class TransferRequest(BaseModel):
-    from_account_id:int
-    to_account_id:int
-    amount:Decimal
+    from_account_id:int=Field(...)
+    to_account_id:int=Field(...)
+    amount:Decimal=Field(gt=0)
 
 class ReversalRequest(TransactionBase):
-    transaction_id:int
+    transaction_id:int=Field(...)
 
 class TransactionResponse(BaseModel):
     id:int
@@ -37,5 +37,5 @@ class TransactionHistoryQuery(BaseModel):
     type:TransactionType
     page:int
     page_size:int
-    
+
 
