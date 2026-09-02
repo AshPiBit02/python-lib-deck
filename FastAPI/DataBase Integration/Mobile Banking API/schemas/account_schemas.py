@@ -1,8 +1,8 @@
 from pydantic import BaseModel,Field,ConfigDict
 from datetime import datetime
 from typing import Optional
-from models import AccountType
-
+from models import AccountType,OwnerRole
+from decimal import Decimal
 class AccountBase(BaseModel):
     account_number:str=Field(...,min_length=20,max_length=20)
     account_type:AccountType
@@ -20,6 +20,19 @@ class AccountResponse(AccountBase):
     customer_id:int
     created_at:datetime
     model_config=ConfigDict(from_attributes=True)
+
+class AccountWithBalance(AccountResponse):
+    balance:Decimal
+
+class AccountWithTransaction(AccountResponse):
+    transactions:list[TransactionResponse]
+
+class JointOwnerAdd(BaseModel):
+    customer_id:int
+    role:OwnerRole
+
+class JointOwnerResponse(JointOwnerAdd):
+    account_id:int
 
 
 
