@@ -56,6 +56,7 @@ def total_salary_per_department(db:Session,agg:AggFunc):
     else:
         func_to_use=func.avg
         salary_type="average_salary"
+    
     results=(
         db.query(Department.name,func_to_use(Employee.salary).label("total_salary"))
         .join(Employee,Department.id==Employee.department_id)

@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session,joinedload
 from models import Employee,Department,HLOrder,ExtremeValue,DeptAdd
 from sqlalchemy import func
 from decimal import Decimal
@@ -17,8 +17,8 @@ def dept_detail_list(db:Session):
     return dept
 
 def dept_name_list(db:Session):
-    depts=db.query(Department.name).all()
-    return [row[0] for row in depts]
+    depts=db.query(Department.name).options(joinedload(Department.employees)).all()
+    return depts
 
 def add_new_department(db:Session,dept:Department):
     new_dept=Department(name=dept.name,location=dept.location,budget=dept.budget)
