@@ -11,7 +11,7 @@ class AccountBase(BaseModel):
 class AccountCreate(AccountBase):
     customer_id:int=Field(...)
 
-class AccountUpdate(AccountBase):
+class AccountUpdate(BaseModel):
     account_number:Optional[str]=Field(default=None,min_length=20,max_length=20)
     account_type:Optional[AccountType]=None
     customer_id:Optional[int]=None
