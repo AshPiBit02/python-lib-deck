@@ -2,7 +2,7 @@ from decimal import Decimal
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from models import Transaction,TransactionType,Account
-from schemas import DepositRequest,WithdrawRequest,ReversalRequest
+from schemas import DepositRequest,WithdrawRequest,ReversalRequest,TransferRequest
 
 REVERSAL_TYPE_MAP = {
     TransactionType.deposit: TransactionType.reversal_deposit,
@@ -80,3 +80,44 @@ def reverse_transaction(db:Session,request:ReversalRequest)->Transaction:
     db.refresh(reversal_txn)
     return reversal_txn
 
+def transfer(db:Session,request:TransferRequest)->dict:
+    from_account=db.query(Account).filter(Account.id==request.from_account_id).first()
+    if from_account is None:
+        raise HTTPException(status_code=404,detail=f"Account {request.from_account_id} not found")
+
+    to_account=db.add(Account).filter(Account.id==request.to_account_id).first()
+    if to_account is None:
+        raise HTTPException(status_code=404,detail=f"Account {request.to_account_id} not found")
+
+    if request.from_account_id==request.to_account_id:
+        raise HTTPException(status_code=400,detail="Cannot transfer to the same account")
+
+    current_balance=get_account_balance(db,request.from_account_id)
+    if current_balance<request.amount:
+        raise HTTPException(status_code=400,detail="Insufficient funds")
+
+    try:
+        debit_txn=Transaction(
+            account_id=request.from_account_id,
+            amount=-request.amount,
+            type=TransactionType.transfer_out,
+        )
+        credit_txn=Transaction(
+            account_id=request.to_account_id,
+            amount=request.amount,
+            type=TransactionType.transfer_in,
+        )
+        db.add(debit_txn)
+        db.add(credit_txn)
+        db.commit()
+        db.refresh(debit_txn)
+        db.refresh(credit_txn)
+        return {
+            "message":f"Transferred {request.amount} from account {request.from_account_id} to {request.to_account_id}",
+            "debit_transaction_id":debit_txn.id,
+            "credit_transaction_id":credit_txn.id,
+        }
+    except Exception:
+        db.rollback()
+        raise HTTPException(status_code=500,detail="Transfer failed, no changes were made")
+        
