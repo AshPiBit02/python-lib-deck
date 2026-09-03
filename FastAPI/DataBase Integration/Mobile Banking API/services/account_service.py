@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from models import Account,AccountCustomer,OwnerRole
 from schemas import AccountCreate,AccountUpdate
+from services.audit_service import log_action,LogStatus
 
 def create_account(db:Session,account:AccountCreate)->Account:
     new_account=Account(
@@ -9,10 +10,16 @@ def create_account(db:Session,account:AccountCreate)->Account:
         account_type=account.account_type,
         customer_id=account.customer_id,
         )
-    db.add(new_account)
-    db.commit()
-    db.refresh(new_account)
-    return new_account
+    try:
+        db.add(new_account)
+        log_action(db,"account_creation",account.customer_id,f"Account created: {account.account_number}",LogStatus.success)
+        db.commit()
+        db.refresh(new_account)
+        return new_account
+    except Exception as e:
+        db.rollback()
+        log_action(db,"account_creation",account.customer_id,f"Faild to create account",LogStatus.failed,commit_independently=True)
+        raise HTTPException(status_code=400,detail="Failed to create account")
 
 def get_account_by_id(db:Session,account_id:int)->Account:
     account=db.query(Account).filter(Account.id==account_id).first()
@@ -29,16 +36,29 @@ def get_accounts(db:Session,skip:int=0,limit:int=100)->list[Account]:
 def update_account(db:Session,account_id:int,updates:AccountUpdate)->Account:
     existing_account=get_account_by_id(db,account_id)
     updated_data=updates.model_dump(exclude_unset=True)
-
-    for field,value in updated_data.items():
-        setattr(existing_account,field,value)
-    db.commit()
-    db.refresh(existing_account)
-    return existing_account
+    try:
+        for field,value in updated_data.items():
+            setattr(existing_account,field,value)
+        log_action(db,"account_update",existing_account.customer_id,f"Fields updated: {list(updated_data.keys())}",LogStatus.success)
+        db.commit()
+        db.refresh(existing_account)
+        return existing_account
+    except Exception as e:
+        db.rollback()
+        log_action(db,"account_update",existing_account.customer_id,f"Failed to update account {account_id}: {str(e)}",LogStatus.success,commit_independently=True)
+        raise HTTPException(status_code=400,detail="Failed to update customer")
+        
 
 def delete_account(db:Session,account_id:int)->dict:
     account=get_account_by_id(db,account_id)
     account_number=account.account_number
-    db.delete(account)
-    db.commit()
-    return {"message":f"Account {account_number} and its transaction history were deleted"}
+    try:
+        db.delete(account)
+        log_action(db,"account_deletion",account.customer_id,f"Delete account: {account.id}",LogStatus.success)
+        db.commit()
+        return {"message":f"Account {account_number} and its transaction history were deleted"}
+    except Exception as e:
+        db.rollback()
+        log_action(db,"account_deletion",account.customer_id,f"Failed to delete account {account.id}: {str(e)}",LogStatus.failed,commit_independently=True)
+        raise HTTPException(status_code=400,detail="Failed to delete account")
+        
