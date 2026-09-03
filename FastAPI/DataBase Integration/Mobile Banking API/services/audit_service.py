@@ -13,3 +13,12 @@ def log_action(db:Session,action:str,customer_id:int|None,
     else:
         db.flush()
     return entry
+
+def get_audit_logs(db:Session,skip:int=0,limit:int=100)->list[AuditLog]:
+    return db.query(AuditLog).order_by(AuditLog.created_at.desc()).offset(skip).limit(limit).all()
+
+def get_audit_logs_for_customer(db:Session,customer_id:int)->list[AuditLog]:
+    return db.query(AuditLog).filter(AuditLog.customer_id==customer_id).order_by(AuditLog.created_at.desc()).all()
+
+def get_failed_actions(db:Session)->list[AuditLog]:
+    return db.query(AuditLog).filter(AuditLog.status==LogStatus.failed).order_by(AuditLog.created_at.desc()).all()
