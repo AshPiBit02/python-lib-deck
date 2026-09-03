@@ -16,6 +16,11 @@ class TransactionType(str,PyEnum):
     withdrawal="Withdrawal"
     transfer_in="Transfer_In"
     transfer_out="Transfer_Out"
+    reversal_deposit="Reversal_Deposit"
+    reversal_withdrawal="Reversal_Withdrawal"
+    reversal_transfer_in="Reversal_Transfer_In"
+    reversal_transfer_out="Reversal_Transfer_Out"
+
 
 class OwnerRole(str,PyEnum):
     primary="Primary"
