@@ -5,7 +5,8 @@ from .customer_schemas import (
 
 from .account_schemas import (
     AccountCreate,AccountUpdate,
-    AccountType,AccountResponse
+    AccountType,AccountResponse,
+    JointOwnerAdd,JointOwnerResponse
 )
 
 from .transaction_schemas import (
