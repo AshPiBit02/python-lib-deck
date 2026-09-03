@@ -36,3 +36,9 @@ def update_account(db:Session,account_id:int,updates:AccountUpdate)->Account:
     db.refresh(existing_account)
     return existing_account
 
+def delete_account(db:Session,account_id:int)->dict:
+    account=get_account_by_id(db,account_id)
+    account_number=account.account_number
+    db.delete(account)
+    db.commit()
+    return {"message":f"Account {account_number} and its transaction history were deleted"}
