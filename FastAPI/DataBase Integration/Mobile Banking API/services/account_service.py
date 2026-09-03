@@ -1,59 +1,38 @@
-from decimal import Decimal
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-from models import Account,AccountCustomer,Customer,Transaction,OwnerRole
-from schemas import AccountCreate,AccountUpdate,JointOwnerAdd
+from models import Account,AccountCustomer,OwnerRole
+from schemas import AccountCreate,AccountUpdate
 
-class AccountService:
-    def __init__(self,db:Session):
-        self.db=db
-
-
-    def create_account(self,payload:AccountCreate)->Account:
-        customer=self.db.query(Customer).filter(Customer.id==payload.customer_id).first()
-        if not customer:
-            raise ValueError(f"Customer with id {payload.customer_id} does not exist")
-        existing = self.db.query(Account).filter(Account.account_number==payload.account_number).first()
-        if existing:
-            raise ValueError(f"Account number {payload.account_number} already exists")
-
-        account=Account(account_number=payload.account_number,
-                        account_type=payload.account_type,
-                        customer_id=payload.customer_id,
-                        )
-
-        self.db.add(account)
-        self.db.commit()
-        self.db.refresh(account)
-
-        link=AccountCustomer(
-            account_id=account.id,
-            customer_id=payload.customer_id,
-            role=OwnerRole.primary,
+def create_account(db:Session,account:AccountCreate)->Account:
+    new_account=Account(
+        account_number=account.account_number,
+        account_type=account.account_type,
+        customer_id=account.customer_id,
         )
-        self.db.add(link)
-        self.db.commit()
+    db.add(new_account)
+    db.commit()
+    db.refresh(new_account)
+    return new_account
 
-        # AuditService()
-        return account
+def get_account_by_id(db:Session,account_id:int)->Account:
+    account=db.query(Account).filter(Account.id==account_id).first()
+    if account is None:
+        raise HTTPException(status_code=404,detail=f"Account with id '{account_id}' not found")
+    return account
 
-    def get_account_by_id(self,account_id:int)->Account|None:
-        return self.db.query(Account).filter(Account.id==account_id).first()
+def get_accounts_for_customer(db:Session,customer_id:int)->list[Account]:
+    return db.query(Account).filter(Account.customer_id==customer_id).all()
 
-    def get_account_by_number(self,account_number:str)->Account|None:
-        return self.db.query(Account).filter(Account.account_number==account_number).first()
+def get_accounts(db:Session,skip:int=0,limit:int=100)->list[Account]:
+    return db.query(Account).offset(skip).limit(limit).all()
 
-    def get_account_balance(self,account_id:int)->dict|None:
-        account=self.get_account_by_id(account_id)
-        if not account:
-            return None
+def update_account(db:Session,account_id:int,updates:AccountUpdate)->Account:
+    existing_account=get_account_by_id(db,account_id)
+    updated_data=updates.model_dump(exclude_unset=True)
 
-        balance=(
-            self.db.query(func.coalesce(func.sum(Transaction.amount),Decimal("0.00")))
-            .filter(Transaction.account_id==account_id)
-            .scalar()
-        )
-        account.balance=balance
-        return account
+    for field,value in updated_data.items():
+        setattr(existing_account,field,value)
+    db.commit()
+    db.refresh(existing_account)
+    return existing_account
 
-    
