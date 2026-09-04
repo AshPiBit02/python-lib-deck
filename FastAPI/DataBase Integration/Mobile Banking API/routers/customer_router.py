@@ -13,10 +13,6 @@ def key_validation(key:str=Header(...)):
     if key!=Settings.secret_key:
         raise HTTPException(status_code=403,detail="Invalid secret key!")
 
-def pin_validation(pin:str=Header(...)):
-    if pin!=Settings.pin:
-        raise HTTPException(status_code=403,detail="Incorrect PIN")
-
 customer_router=APIRouter(prefix="/customer")
 secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)])
 pin_secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation),Depends(pin_validation)])
