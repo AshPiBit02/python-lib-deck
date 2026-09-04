@@ -74,6 +74,8 @@ class AccountCustomer(Base):
     account_id=Column(Integer,ForeignKey("accounts.id"),primary_key=True)
     customer_id=Column(Integer,ForeignKey("customers.id"),primary_key=True)
     role=Column(Enum(OwnerRole),nullable=False,default=OwnerRole.joint)
+    account = relationship("Account")
+    customer = relationship("Customer")
 
 class Transaction(Base):
     __tablename__="transactions"
