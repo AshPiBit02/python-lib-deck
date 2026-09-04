@@ -97,7 +97,7 @@ def transfer(db:Session,request:TransferRequest)->dict:
         log_action(db, "transfer", None, f"Failed: source account {request.from_account_id} not found", LogStatus.failed, commit_independently=True)
         raise HTTPException(status_code=404,detail=f"Account {request.from_account_id} not found")
 
-    to_account=db.add(Account).filter(Account.id==request.to_account_id).first()
+    to_account=db.query(Account).filter(Account.id==request.to_account_id).first()
     if to_account is None:
         log_action(db, "transfer", from_account.customer_id, f"Failed: destination account {request.to_account_id} not found", LogStatus.failed, commit_independently=True)
         raise HTTPException(status_code=404,detail=f"Account {request.to_account_id} not found")
