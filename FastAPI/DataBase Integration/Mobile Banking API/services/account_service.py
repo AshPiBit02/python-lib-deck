@@ -94,3 +94,20 @@ def add_joint_owner(db:Session,account_id:int,request:JointOwnerAdd)->AccountCus
         db.rollback()
         log_action(db,"joint_owner_addition",request.customer_id,f"Failed to add joint owner: {str(e)}",LogStatus.failed,commit_independently=True)
         raise HTTPException(status_code=400,detail="Failed to add joint owner")
+
+def get_joint_owners(db:Session,account_id:int)->list[AccountCustomer]:
+    return db.query(AccountCustomer).filter(AccountCustomer.id==account_id).all()
+
+def remove_joint_owner(db:Session,account_id:int,customer_id:int)->dict:
+    link=db.query(AccountCustomer).filter(AccountCustomer.id==account_id,AccountCustomer.customer_id==customer_id,).first()
+    if link is None:
+        raise HTTPException(status_code=404,detail="This customer is not a joint owner of this account")
+    try:
+        db.delete(link)
+        log_action(db,"joint_owner_remove",customer_id,f"Customer {customer_id} removed as joint owner on account {account_id}",LogStatus.success)
+        db.commit()
+        return {"message":f"Customer {customer_id} removed as joint owner on account {account_id}"}
+    except Exception as e:
+        db.rollback()
+        log_action(db,"joint_owner_remove",customer_id,f"Failed to remove joint owner: {str(e)}",LogStatus.failed,commit_independently=True)
+        raise HTTPException(status_code=400,detail="Failed to remove joint owner")
