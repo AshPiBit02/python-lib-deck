@@ -1,0 +1,15 @@
+from fastapi import APIRouter,Header,HTTPException
+from typing import Annotated
+from db.database import get_db
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from core.config import Settings
+import services
+import schemas
+
+database_dependency=Annotated[Session,Depends(get_db)]
+
+def key_validation(key:str=Header(...)):
+    if key!=Settings.secret_key:
+        raise HTTPException(status_code=403,detail="Invalid secret key!")
+
