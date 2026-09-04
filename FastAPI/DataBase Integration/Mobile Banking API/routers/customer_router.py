@@ -20,3 +20,16 @@ def pin_validation(pin:str=Header(...)):
 customer_router=APIRouter(prefix="/customer")
 secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)])
 pin_secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation),Depends(pin_validation)])
+
+
+@customer_router.get("/view/list",response_model=list[schemas.CustomerResponse])
+def list_customers(db:database_dependency,skip:int=0,limit:int=100):
+    return services.get_customers(db,skip,limit)
+
+@customer_router.get("/view/{customer_id}",response_model=schemas.CustomerResponse)
+def get_customer(db:database_dependency,customer_id:int):
+    return services.get_customer_by_id(db,customer_id)
+
+@customer_router.get("/view/{customer_id}/accounts",response_model=schemas.CustomerWithAccounts)
+def get_customer_accounts(db:database_dependency,customer_id:int):
+    return services.get_customers_with_accounts(db,customer_id)
