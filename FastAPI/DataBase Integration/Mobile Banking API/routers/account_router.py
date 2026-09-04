@@ -22,9 +22,9 @@ def get_customer_account(db:database_dependency,customer_id:int):
     return services.get_accounts_for_customer(db,customer_id)
 
 @secure_account_router.post("/add",response_model=schemas.AccountResponse)
-def add_account(db:Session,account:schemas.AccountCreate):
+def add_account(db:database_dependency,account:schemas.AccountCreate):
     return services.create_account(db,account)
 
 @secure_account_router.patch("/udpate",response_model=schemas.AccountResponse)
-def update_account(db:Session,account_id:int,updates:schemas.AccountResponse):
+def update_account(db:database_dependency,account_id:int,updates:schemas.AccountResponse):
     return services.update_account(db,account_id,updates)
