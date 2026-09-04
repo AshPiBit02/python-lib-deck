@@ -33,3 +33,11 @@ def get_customer(db:database_dependency,customer_id:int):
 @customer_router.get("/view/{customer_id}/accounts",response_model=schemas.CustomerWithAccounts)
 def get_customer_accounts(db:database_dependency,customer_id:int):
     return services.get_customers_with_accounts(db,customer_id)
+
+@secure_customer_router.post("/add",response_model=schemas.CustomerResponse)
+def add_customer(db:database_dependency,customer:schemas.CustomerCreate):
+    return services.create_customer(db,customer)
+
+@secure_customer_router.patch("/update/{customer_id}",response_model=schemas.CustomerResponse)
+def update_customer(db:database_dependency,customer_id:int,updates:schemas.CustomerUpdate):
+    return services.update_customer(db,customer_id,updates)
