@@ -15,7 +15,6 @@ def key_validation(key:str=Header(...)):
 
 customer_router=APIRouter(prefix="/customer")
 secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)])
-pin_secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation),Depends(pin_validation)])
 
 
 @customer_router.get("/view/list",response_model=list[schemas.CustomerResponse])
