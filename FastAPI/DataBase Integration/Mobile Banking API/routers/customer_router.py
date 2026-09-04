@@ -6,12 +6,7 @@ from sqlalchemy.orm import Session
 from core.config import Settings
 import services
 import schemas
-
-database_dependency=Annotated[Session,Depends(get_db)]
-
-def key_validation(key:str=Header(...)):
-    if key!=Settings.secret_key:
-        raise HTTPException(status_code=403,detail="Invalid secret key!")
+from core.dependencies import database_dependency,key_validation
 
 customer_router=APIRouter(prefix="/customer")
 secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)])
