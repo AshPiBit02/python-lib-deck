@@ -5,7 +5,7 @@ def log_action(db:Session,action:str,customer_id:int|None,
                details:str|None,status:LogStatus=LogStatus.success,
                commit_independently:bool=False,
                )->AuditLog:
-    entry=AuditLog(action=action,customer_id=customer_id,detials=details,status=status)
+    entry=AuditLog(action=action,customer_id=customer_id,details=details,status=status)
     db.add(entry)
     if commit_independently:
         db.commit()
