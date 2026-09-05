@@ -3,15 +3,18 @@ from decimal import Decimal
 from models import TransactionType
 from datetime import datetime
 from typing import Optional
+from fastapi import Query
 
 class TransactionBase(BaseModel):
     amount:Decimal=Field(gt=0)
     type:TransactionType
 
 class DepositRequest(TransactionBase):
+    type:TransactionType=Query(default=TransactionType.deposit)
     account_id:int=Field(...)
 
 class WithdrawRequest(TransactionBase):
+    type:TransactionType=Query(default=TransactionType.withdrawal)
     account_id:int=Field(...)
 
 class TransferRequest(BaseModel):

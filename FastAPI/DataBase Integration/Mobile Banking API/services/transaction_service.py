@@ -69,7 +69,7 @@ def reverse_transaction(db:Session,request:ReversalRequest)->Transaction:
         log_action(db, "transaction_reversal", None, f"Failed: transaction {request.transaction_id} not found", LogStatus.failed, commit_independently=True)
         raise HTTPException(status_code=404,detail=f"Transaction {request.transaction_id} not found")
 
-    if original.reversal_entries:
+    if original.reversed_entries:
         log_action(db, "transaction_reversal", original.account.customer_id, f"Failed: transaction {request.transaction_id} has already been reversed", LogStatus.failed, commit_independently=True)
         raise HTTPException(status_code=400,detail="This transaction has already been reversed")
 
