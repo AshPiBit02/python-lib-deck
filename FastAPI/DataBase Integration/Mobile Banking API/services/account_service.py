@@ -61,7 +61,7 @@ def delete_account(db:Session,account_id:int)->dict:
         db.rollback()
         log_action(db,"account_deletion",account.customer_id,f"Failed to delete account {account.id}: {str(e)}",LogStatus.failed,commit_independently=True)
         raise HTTPException(status_code=400,detail="Failed to delete account")
-
+    
 def add_joint_owner(db:Session,account_id:int,request:JointOwnerAdd)->AccountCustomer:
     account=db.query(Account).filter(Account.id==account_id).first()
     if account is None:

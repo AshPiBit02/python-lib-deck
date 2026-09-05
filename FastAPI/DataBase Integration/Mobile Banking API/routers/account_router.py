@@ -1,5 +1,6 @@
 from fastapi import APIRouter,Header,HTTPException
 from typing import Annotated
+import models
 from fastapi import Depends
 from sqlalchemy.orm import Session
 import services
@@ -28,3 +29,21 @@ def add_account(db:database_dependency,account:schemas.AccountCreate):
 @secure_account_router.patch("/udpate",response_model=schemas.AccountResponse)
 def update_account(db:database_dependency,account_id:int,updates:schemas.AccountResponse):
     return services.update_account(db,account_id,updates)
+
+@secure_account_router.delete("/delete/{account_id}")
+def delete_account(db:database_dependency,account_id:int):
+    return services.delete_account(db,account_id)
+
+@secure_account_router.post("/add/jointOwner",response_model=schemas.AccountCustomer)
+def add_joint_owner(db:database_dependency,account_id:int,request:schemas.JointOwnerAdd):
+    return services.add_joint_owner(db,account_id,request)
+
+@account_router.get("/view/jointOwners",response_model=list[models.AccountCustomer])
+def get_joint_owners(db:database_dependency,account_id:int):
+    return services.get_joint_owners(db,account_id)
+
+@secure_account_router.delete("/delete/jointOwner")
+def delete_joint_owner(db:database_dependency,account_id:int,customer_id:int):
+    return services.remove_joint_owner(db,account_id,customer_id)
+
+

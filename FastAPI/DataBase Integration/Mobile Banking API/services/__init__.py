@@ -1,6 +1,7 @@
 from .account_service import (
     create_account,get_account_by_id,get_accounts_for_customer,
-    get_accounts,update_account,delete_account,
+    get_accounts,update_account,delete_account,add_joint_owner,get_joint_owners,
+    remove_joint_owner,
 )
 
 from .audit_service import (
