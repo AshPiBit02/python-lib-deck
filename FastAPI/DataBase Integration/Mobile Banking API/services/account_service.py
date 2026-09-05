@@ -96,7 +96,7 @@ def add_joint_owner(db:Session,account_id:int,request:JointOwnerAdd)->AccountCus
         raise HTTPException(status_code=400,detail="Failed to add joint owner")
 
 def get_joint_owners(db:Session,account_id:int)->list[AccountCustomer]:
-    return db.query(AccountCustomer).filter(AccountCustomer.id==account_id).all()
+    return db.query(AccountCustomer).filter(AccountCustomer.account_id==account_id).all()
 
 def remove_joint_owner(db:Session,account_id:int,customer_id:int)->dict:
     link=db.query(AccountCustomer).filter(AccountCustomer.id==account_id,AccountCustomer.customer_id==customer_id,).first()

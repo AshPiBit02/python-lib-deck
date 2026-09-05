@@ -11,6 +11,10 @@ secure_account_router=APIRouter(prefix="/account",dependencies=[Depends(key_vali
 def list_accounts(db:database_dependency,skip:int=0,limit:int=100):
     return services.get_accounts(db,skip,limit)
 
+@account_router.get("/view/jointOwners",response_model=list[schemas.JointOwnerResponse])
+def get_joint_owners(db:database_dependency,account_id:int):
+    return services.get_joint_owners(db,account_id)
+
 @account_router.get("/view/{account_id}",response_model=schemas.AccountResponse)
 def get_account(db:database_dependency,account_id:int):
     return services.get_account_by_id(db,account_id)
@@ -31,13 +35,11 @@ def update_account(db:database_dependency,account_id:int,updates:schemas.Account
 def delete_account(db:database_dependency,account_id:int):
     return services.delete_account(db,account_id)
 
+
 @secure_account_router.post("/add/jointOwner",response_model=schemas.JointOwnerResponse)
 def add_joint_owner(db:database_dependency,account_id:int,request:schemas.JointOwnerAdd):
     return services.add_joint_owner(db,account_id,request)
 
-@account_router.get("/view/jointOwners",response_model=list[schemas.JointOwnerResponse])
-def get_joint_owners(db:database_dependency,account_id:int):
-    return services.get_joint_owners(db,account_id)
 
 @secure_account_router.delete("/delete/jointOwner")
 def delete_joint_owner(db:database_dependency,account_id:int,customer_id:int):
