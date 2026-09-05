@@ -22,7 +22,7 @@ class TransferRequest(BaseModel):
     to_account_id:int=Field(...)
     amount:Decimal=Field(...,gt=0)
 
-class ReversalRequest(TransactionBase):
+class ReversalRequest(BaseModel):
     transaction_id:int=Field(...)
 
 class TransactionResponse(BaseModel):
