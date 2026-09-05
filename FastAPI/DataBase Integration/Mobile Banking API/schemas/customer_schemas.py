@@ -22,4 +22,4 @@ class CustomerResponse(CustomerBase):
     model_config=ConfigDict(from_attributes=True)
 
 class CustomerWithAccounts(CustomerResponse):
-    account_list:List[AccountResponse]
+    accounts:List[AccountResponse]

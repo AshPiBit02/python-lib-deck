@@ -22,7 +22,7 @@ def get_customer(db:database_dependency,customer_id:int):
 
 @customer_router.get("/view/{customer_id}/accounts",response_model=schemas.CustomerWithAccounts)
 def get_customer_accounts(db:database_dependency,customer_id:int):
-    return services.get_customers_with_accounts(db,customer_id)
+    return services.get_customer_with_accounts(db,customer_id)
 
 @secure_customer_router.post("/add",response_model=schemas.CustomerResponse)
 def add_customer(db:database_dependency,customer:schemas.CustomerCreate):
