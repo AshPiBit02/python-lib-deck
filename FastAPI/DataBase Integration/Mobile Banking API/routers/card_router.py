@@ -3,8 +3,8 @@ import services
 import schemas
 from core.dependencies import database_dependency, key_validation
 
-card_router = APIRouter(prefix="/card")
-secure_card_router = APIRouter(prefix="/card", dependencies=[Depends(key_validation)])
+card_router = APIRouter(prefix="/card",tags=["Cards"])
+secure_card_router = APIRouter(prefix="/card", dependencies=[Depends(key_validation)],tags=["Cards"])
 
 
 @card_router.get("/view/{account_id}", response_model=schemas.CardResponse)

@@ -3,8 +3,8 @@ import services
 import schemas
 from core.dependencies import database_dependency, key_validation, pin_validation
 
-secure_transaction_router = APIRouter(prefix="/transaction", dependencies=[Depends(key_validation)])
-pin_secure_transaction_router=APIRouter(prefix="/transaction",dependencies=[Depends(key_validation),Depends(pin_validation)])
+secure_transaction_router = APIRouter(prefix="/transaction", dependencies=[Depends(key_validation)],tags=["Transactions"])
+pin_secure_transaction_router=APIRouter(prefix="/transaction",dependencies=[Depends(key_validation),Depends(pin_validation)],tags=["Transactions"])
 
 
 @secure_transaction_router.get("/view/balance/{account_id}")
