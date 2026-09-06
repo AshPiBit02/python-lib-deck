@@ -118,3 +118,34 @@ def ensure_account_not_frozen(db:Session,account_id:int)->None:
     if account.is_frozen:
         raise HTTPException(status_code=403,detail=f"Account {account_id} is frozen, this actionis not permitted")
     
+def freeze_account(db:Session,account_id:int)->Account:
+    account=get_account_by_id(db,account_id)
+    if account.is_frozen:
+        raise HTTPException(status_code=400,detail=f"Account {account_id} is already frozen")
+    try:
+        account.is_frozen=True
+        log_action(db,"account_frozen",account.customer_id,f"Account {account_id} frozen",LogStatus.success)
+        db.commit()
+        db.refresh(account)
+        return account
+    except Exception as e:
+        db.rollback()
+        log_action(db,"account_frozen",account.customer_id,f"Failed to freeze account {account_id}: {str(e)}",LogStatus.failed,commit_independently=True)
+        raise HTTPException(status_code=400,detail="Failed to freeze account")
+
+def unfreeze_account(db:Session,account_id:int)->Account:
+    account=get_account_by_id(db,account_id)
+    if not account.is_frozen:
+        raise HTTPException(status_code=403,detail=f"Account {account_id} is already active")
+    try:
+        account.is_frozen = False
+        log_action(db, "account_unfrozen", account.customer_id, f"Account {account_id} unfrozen", LogStatus.success)
+        db.commit()
+        db.refresh(account)
+        return account
+    except Exception as e:
+        db.rollback()
+        log_action(db, "account_unfrozen", account.customer_id, f"Failed to unfreeze account {account_id}: {str(e)}",
+                   LogStatus.failed, commit_independently=True)
+        raise HTTPException(status_code=400, detail="Failed to unfreeze account")
+
