@@ -15,7 +15,7 @@ from .card_service import (
 
 from .customer_service import (
     create_customer,get_customer_by_id,get_customer_by_email,
-    get_customers,update_customer,get_customer_with_accounts,
+    get_customers,update_customer,get_customers_with_accounts,
 )
 
 from .transaction_service import (

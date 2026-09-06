@@ -5,6 +5,7 @@ from models import Transaction,TransactionType,Account
 from schemas import DepositRequest,WithdrawRequest,ReversalRequest,TransferRequest
 from services.audit_service import log_action,LogStatus
 from services.account_service import ensure_account_not_frozen
+from sqlalchemy import text
 
 REVERSAL_TYPE_MAP = {
     TransactionType.deposit: TransactionType.reversal_deposit,
@@ -19,12 +20,12 @@ REVERSAL_TYPE_MAP = {
     TransactionType.reversal_transfer_out: TransactionType.transfer_out,
 }
 
-def get_account_balance(db:Session,account_id:int)->Decimal:
-    account=db.query(Account).filter(Account.id==account_id).first()
-    if account is None:
-        raise HTTPException(status_code=404,detail=f"Account {account_id} not found")
-    total=sum((t.amount for t in account.transactions),Decimal("0.00"))
-    return total
+def get_account_balance(db: Session, account_id: int) -> Decimal:
+    result = db.execute(
+        text("SELECT COALESCE(SUM(amount), 0) AS total FROM transactions WHERE account_id = :account_id"),
+        {"account_id": account_id}
+    ).scalar()
+    return result
 
 def deposit(db:Session,request:DepositRequest)->Transaction:
     ensure_account_not_frozen(db,request.account_id)
