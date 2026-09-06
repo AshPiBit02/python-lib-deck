@@ -55,6 +55,7 @@ class Account(Base):
     account_type=Column(Enum(AccountType),nullable=False)
     customer_id=Column(Integer,ForeignKey("customers.id"),nullable=False)
     created_at=Column(DateTime,server_default=func.now())
+    is_frozen=Column(Boolean,default=False,nullable=False)
 
     # Many-to-One: Account-> Customer(primary owner)
     primary_owner=relationship("Customer",back_populates="accounts")
