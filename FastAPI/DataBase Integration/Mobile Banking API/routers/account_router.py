@@ -4,8 +4,8 @@ import services
 import schemas
 from core.dependencies import database_dependency,key_validation
 
-account_router=APIRouter(prefix="/account")
-secure_account_router=APIRouter(prefix="/account",dependencies=[Depends(key_validation)])
+account_router=APIRouter(prefix="/account",tags=["Accounts"])
+secure_account_router=APIRouter(prefix="/account",dependencies=[Depends(key_validation)],tags=["Accounts"])
 
 @account_router.get("/view/list",response_model=list[schemas.AccountResponse])
 def list_accounts(db:database_dependency,skip:int=0,limit:int=100):

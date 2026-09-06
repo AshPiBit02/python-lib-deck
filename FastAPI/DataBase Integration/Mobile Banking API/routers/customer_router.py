@@ -8,8 +8,8 @@ import services
 import schemas
 from core.dependencies import database_dependency,key_validation
 
-customer_router=APIRouter(prefix="/customer")
-secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)])
+customer_router=APIRouter(prefix="/customer",tags=["Customers"])
+secure_customer_router=APIRouter(prefix="/customer",dependencies=[Depends(key_validation)],tags=["Customers"])
 
 
 @customer_router.get("/view/list",response_model=list[schemas.CustomerResponse])

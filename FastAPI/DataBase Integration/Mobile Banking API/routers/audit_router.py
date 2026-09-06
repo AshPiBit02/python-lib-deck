@@ -5,7 +5,7 @@ import services
 import schemas
 from core.dependencies import database_dependency,key_validation
 
-auditLog_router=APIRouter(prefix="/auditlog",dependencies=[Depends(key_validation)])
+auditLog_router=APIRouter(prefix="/auditlog",dependencies=[Depends(key_validation)],tags=["Audit Logs"])
 
 @auditLog_router.get("/view/list",response_model=list[schemas.AuditLogResponse])
 def get_audit_logs(db:database_dependency,skip:int=0,limit:int=100):
