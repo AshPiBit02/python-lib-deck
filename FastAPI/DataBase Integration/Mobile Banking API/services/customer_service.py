@@ -53,7 +53,8 @@ def update_customer(db:Session,customer_id:int,updates:CustomerUpdate)->Customer
         log_action(db,"customer_update",customer_id,f"Failed to update customer {customer_id}: {str(e)}",LogStatus.failed,commit_independently=True)
         raise HTTPException(status_code=400,detail="Failed to update customer")
 
-def get_customer_with_accounts(db:Session,customer_id:int)->Customer:
-    customer=get_customer_by_id(db,customer_id)
-    _=customer.accounts
-    return customer
+def get_customers_with_accounts(db:Session,skip:int=0,limit:int=100)->list[Customer]:
+    customers=db.query(Customer).offset(skip).limit(limit).all()
+    for c in customers:
+        _=c.accounts
+    return customers
