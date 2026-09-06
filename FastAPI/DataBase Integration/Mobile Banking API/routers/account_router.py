@@ -45,4 +45,10 @@ def add_joint_owner(db:database_dependency,account_id:int,request:schemas.JointO
 def delete_joint_owner(db:database_dependency,account_id:int,customer_id:int):
     return services.remove_joint_owner(db,account_id,customer_id)
 
+@secure_account_router.patch("/freeze/{account_id}", response_model=schemas.AccountResponse)
+def freeze(db: database_dependency, account_id: int):
+    return services.freeze_account(db, account_id)
 
+@secure_account_router.patch("/unfreeze/{account_id}", response_model=schemas.AccountResponse)
+def unfreeze(db: database_dependency, account_id: int):
+    return services.unfreeze_account(db, account_id)

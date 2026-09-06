@@ -15,11 +15,13 @@ class AccountUpdate(BaseModel):
     account_number:Optional[str]=Field(default=None,min_length=20,max_length=20)
     account_type:Optional[AccountType]=None
     customer_id:Optional[int]=None
+    is_frozen:Optional[bool]=None
 
 class AccountResponse(AccountBase):
     id:int
     customer_id:int
     created_at:datetime
+    is_frozen:bool
     model_config=ConfigDict(from_attributes=True)
 
 class AccountWithBalance(AccountResponse):

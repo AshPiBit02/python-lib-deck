@@ -31,3 +31,7 @@ def add_customer(db:database_dependency,customer:schemas.CustomerCreate):
 @secure_customer_router.patch("/update/{customer_id}",response_model=schemas.CustomerResponse)
 def update_customer(db:database_dependency,customer_id:int,updates:schemas.CustomerUpdate):
     return services.update_customer(db,customer_id,updates)
+
+@customer_router.get("/view/list/with_accounts", response_model=list[schemas.CustomerWithAccounts])
+def list_customers_with_accounts(db: database_dependency, skip: int = 0, limit: int = 100):
+    return services.get_customers_with_accounts(db, skip, limit)
