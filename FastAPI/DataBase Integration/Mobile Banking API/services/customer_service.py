@@ -1,6 +1,4 @@
-from decimal import Decimal
-from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy.orm import Session,joinedload
 from models import Customer
 from schemas import CustomerCreate,CustomerUpdate
 from fastapi import HTTPException
@@ -54,7 +52,5 @@ def update_customer(db:Session,customer_id:int,updates:CustomerUpdate)->Customer
         raise HTTPException(status_code=400,detail="Failed to update customer")
 
 def get_customers_with_accounts(db:Session,skip:int=0,limit:int=100)->list[Customer]:
-    customers=db.query(Customer).offset(skip).limit(limit).all()
-    for c in customers:
-        _=c.accounts
+    customers=db.query(Customer).options(joinedload(Customer.accounts)).offset(skip).limit(limit).all()
     return customers
